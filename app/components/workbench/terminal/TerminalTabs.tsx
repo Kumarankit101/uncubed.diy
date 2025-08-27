@@ -35,7 +35,7 @@ export const TerminalTabs = memo(() => {
   const closeTerminal = (index: number) => {
     if (index === 0) {
       return;
-    } // Can't close bolt terminal
+    } // Can't close uncubed terminal
 
     const terminalRef = terminalRefs.current[index];
 
@@ -127,8 +127,8 @@ export const TerminalTabs = memo(() => {
       }}
     >
       <div className="h-full">
-        <div className="bg-bolt-elements-terminals-background h-full flex flex-col">
-          <div className="flex items-center bg-bolt-elements-background-depth-2 border-y border-bolt-elements-borderColor gap-1.5 min-h-[34px] p-2">
+        <div className="bg-uncubed-elements-terminals-background h-full flex flex-col">
+          <div className="flex items-center bg-uncubed-elements-background-depth-2 border-y border-uncubed-elements-borderColor gap-1.5 min-h-[34px] p-2">
             {Array.from({ length: terminalCount + 1 }, (_, index) => {
               const isActive = activeTerminal === index;
 
@@ -140,16 +140,16 @@ export const TerminalTabs = memo(() => {
                       className={classNames(
                         'flex items-center text-sm cursor-pointer gap-1.5 px-3 py-2 h-full whitespace-nowrap rounded-full',
                         {
-                          'bg-bolt-elements-terminals-buttonBackground text-bolt-elements-textSecondary hover:text-bolt-elements-textPrimary':
+                          'bg-uncubed-elements-terminals-buttonBackground text-uncubed-elements-textSecondary hover:text-uncubed-elements-textPrimary':
                             isActive,
-                          'bg-bolt-elements-background-depth-2 text-bolt-elements-textSecondary hover:bg-bolt-elements-terminals-buttonBackground':
+                          'bg-uncubed-elements-background-depth-2 text-uncubed-elements-textSecondary hover:bg-uncubed-elements-terminals-buttonBackground':
                             !isActive,
                         },
                       )}
                       onClick={() => setActiveTerminal(index)}
                     >
                       <div className="i-ph:terminal-window-duotone text-lg" />
-                      Bolt Terminal
+                      Uncubed Terminal
                     </button>
                   ) : (
                     <React.Fragment>
@@ -158,8 +158,9 @@ export const TerminalTabs = memo(() => {
                         className={classNames(
                           'flex items-center text-sm cursor-pointer gap-1.5 px-3 py-2 h-full whitespace-nowrap rounded-full',
                           {
-                            'bg-bolt-elements-terminals-buttonBackground text-bolt-elements-textPrimary': isActive,
-                            'bg-bolt-elements-background-depth-2 text-bolt-elements-textSecondary hover:bg-bolt-elements-terminals-buttonBackground':
+                            'bg-uncubed-elements-terminals-buttonBackground text-uncubed-elements-textPrimary':
+                              isActive,
+                            'bg-uncubed-elements-background-depth-2 text-uncubed-elements-textSecondary hover:bg-uncubed-elements-terminals-buttonBackground':
                               !isActive,
                           },
                         )}
@@ -168,7 +169,7 @@ export const TerminalTabs = memo(() => {
                         <div className="i-ph:terminal-window-duotone text-lg" />
                         Terminal {terminalCount > 1 && index}
                         <button
-                          className="bg-transparent text-bolt-elements-textTertiary hover:text-bolt-elements-textPrimary hover:bg-transparent rounded"
+                          className="bg-transparent text-uncubed-elements-textTertiary hover:text-uncubed-elements-textPrimary hover:bg-transparent rounded"
                           onClick={(e) => {
                             e.stopPropagation();
                             closeTerminal(index);
@@ -194,7 +195,7 @@ export const TerminalTabs = memo(() => {
           {Array.from({ length: terminalCount + 1 }, (_, index) => {
             const isActive = activeTerminal === index;
 
-            logger.debug(`Starting bolt terminal [${index}]`);
+            logger.debug(`Starting uncubed terminal [${index}]`);
 
             if (index == 0) {
               return (
@@ -207,7 +208,7 @@ export const TerminalTabs = memo(() => {
                   ref={(ref) => {
                     terminalRefs.current.push(ref);
                   }}
-                  onTerminalReady={(terminal) => workbenchStore.attachBoltTerminal(terminal)}
+                  onTerminalReady={(terminal) => workbenchStore.attachUncubedTerminal(terminal)}
                   onTerminalResize={(cols, rows) => workbenchStore.onTerminalResize(cols, rows)}
                   theme={theme}
                 />

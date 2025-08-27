@@ -234,7 +234,7 @@ export const ModelSelector = ({
 
   if (providerList.length === 0) {
     return (
-      <div className="mb-2 p-4 rounded-lg border border-bolt-elements-borderColor bg-bolt-elements-prompt-background text-bolt-elements-textPrimary">
+      <div className="mb-2 p-4 rounded-lg border border-uncubed-elements-borderColor bg-uncubed-elements-prompt-background text-uncubed-elements-textPrimary">
         <p className="text-center">
           No providers are currently enabled. Please enable at least one provider in the settings to start using the
           chat.
@@ -249,11 +249,11 @@ export const ModelSelector = ({
       <div className="relative flex w-full" onKeyDown={handleProviderKeyDown} ref={providerDropdownRef}>
         <div
           className={classNames(
-            'w-full p-2 rounded-lg border border-bolt-elements-borderColor',
-            'bg-bolt-elements-prompt-background text-bolt-elements-textPrimary',
-            'focus-within:outline-none focus-within:ring-2 focus-within:ring-bolt-elements-focus',
+            'w-full p-2 rounded-lg border border-uncubed-elements-borderColor',
+            'bg-uncubed-elements-prompt-background text-uncubed-elements-textPrimary',
+            'focus-within:outline-none focus-within:ring-2 focus-within:ring-uncubed-elements-focus',
             'transition-all cursor-pointer',
-            isProviderDropdownOpen ? 'ring-2 ring-bolt-elements-focus' : undefined,
+            isProviderDropdownOpen ? 'ring-2 ring-uncubed-elements-focus' : undefined,
           )}
           onClick={() => setIsProviderDropdownOpen(!isProviderDropdownOpen)}
           onKeyDown={(e) => {
@@ -272,7 +272,7 @@ export const ModelSelector = ({
             <div className="truncate">{provider?.name || 'Select provider'}</div>
             <div
               className={classNames(
-                'i-ph:caret-down w-4 h-4 text-bolt-elements-textSecondary opacity-75',
+                'i-ph:caret-down w-4 h-4 text-uncubed-elements-textSecondary opacity-75',
                 isProviderDropdownOpen ? 'rotate-180' : undefined,
               )}
             />
@@ -281,7 +281,7 @@ export const ModelSelector = ({
 
         {isProviderDropdownOpen && (
           <div
-            className="absolute z-20 w-full mt-1 py-1 rounded-lg border border-bolt-elements-borderColor bg-bolt-elements-background-depth-2 shadow-lg"
+            className="absolute z-20 w-full mt-1 py-1 rounded-lg border border-uncubed-elements-borderColor bg-uncubed-elements-background-depth-2 shadow-lg"
             role="listbox"
             id="provider-listbox"
           >
@@ -295,9 +295,9 @@ export const ModelSelector = ({
                   placeholder="Search providers..."
                   className={classNames(
                     'w-full pl-2 py-1.5 rounded-md text-sm',
-                    'bg-bolt-elements-background-depth-2 border border-bolt-elements-borderColor',
-                    'text-bolt-elements-textPrimary placeholder:text-bolt-elements-textTertiary',
-                    'focus:outline-none focus:ring-2 focus:ring-bolt-elements-focus',
+                    'bg-uncubed-elements-background-depth-2 border border-uncubed-elements-borderColor',
+                    'text-uncubed-elements-textPrimary placeholder:text-uncubed-elements-textTertiary',
+                    'focus:outline-none focus:ring-2 focus:ring-uncubed-elements-focus',
                     'transition-all',
                   )}
                   onClick={(e) => e.stopPropagation()}
@@ -305,7 +305,7 @@ export const ModelSelector = ({
                   aria-label="Search providers"
                 />
                 <div className="absolute left-2.5 top-1/2 -translate-y-1/2">
-                  <span className="i-ph:magnifying-glass text-bolt-elements-textTertiary" />
+                  <span className="i-ph:magnifying-glass text-uncubed-elements-textTertiary" />
                 </div>
               </div>
             </div>
@@ -315,19 +315,19 @@ export const ModelSelector = ({
                 'max-h-60 overflow-y-auto',
                 'sm:scrollbar-none',
                 '[&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar]:h-2',
-                '[&::-webkit-scrollbar-thumb]:bg-bolt-elements-borderColor',
-                '[&::-webkit-scrollbar-thumb]:hover:bg-bolt-elements-borderColorHover',
+                '[&::-webkit-scrollbar-thumb]:bg-uncubed-elements-borderColor',
+                '[&::-webkit-scrollbar-thumb]:hover:bg-uncubed-elements-borderColorHover',
                 '[&::-webkit-scrollbar-thumb]:rounded-full',
-                '[&::-webkit-scrollbar-track]:bg-bolt-elements-background-depth-2',
+                '[&::-webkit-scrollbar-track]:bg-uncubed-elements-background-depth-2',
                 '[&::-webkit-scrollbar-track]:rounded-full',
                 'sm:[&::-webkit-scrollbar]:w-1.5 sm:[&::-webkit-scrollbar]:h-1.5',
-                'sm:hover:[&::-webkit-scrollbar-thumb]:bg-bolt-elements-borderColor/50',
-                'sm:hover:[&::-webkit-scrollbar-thumb:hover]:bg-bolt-elements-borderColor',
+                'sm:hover:[&::-webkit-scrollbar-thumb]:bg-uncubed-elements-borderColor/50',
+                'sm:hover:[&::-webkit-scrollbar-thumb:hover]:bg-uncubed-elements-borderColor',
                 'sm:[&::-webkit-scrollbar-track]:bg-transparent',
               )}
             >
               {filteredProviders.length === 0 ? (
-                <div className="px-3 py-2 text-sm text-bolt-elements-textTertiary">No providers found</div>
+                <div className="px-3 py-2 text-sm text-uncubed-elements-textTertiary">No providers found</div>
               ) : (
                 filteredProviders.map((providerOption, index) => (
                   <div
@@ -337,13 +337,13 @@ export const ModelSelector = ({
                     aria-selected={provider?.name === providerOption.name}
                     className={classNames(
                       'px-3 py-2 text-sm cursor-pointer',
-                      'hover:bg-bolt-elements-background-depth-3',
-                      'text-bolt-elements-textPrimary',
+                      'hover:bg-uncubed-elements-background-depth-3',
+                      'text-uncubed-elements-textPrimary',
                       'outline-none',
                       provider?.name === providerOption.name || focusedProviderIndex === index
-                        ? 'bg-bolt-elements-background-depth-2'
+                        ? 'bg-uncubed-elements-background-depth-2'
                         : undefined,
-                      focusedProviderIndex === index ? 'ring-1 ring-inset ring-bolt-elements-focus' : undefined,
+                      focusedProviderIndex === index ? 'ring-1 ring-inset ring-uncubed-elements-focus' : undefined,
                     )}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -376,11 +376,11 @@ export const ModelSelector = ({
       <div className="relative flex w-full min-w-[70%]" onKeyDown={handleModelKeyDown} ref={modelDropdownRef}>
         <div
           className={classNames(
-            'w-full p-2 rounded-lg border border-bolt-elements-borderColor',
-            'bg-bolt-elements-prompt-background text-bolt-elements-textPrimary',
-            'focus-within:outline-none focus-within:ring-2 focus-within:ring-bolt-elements-focus',
+            'w-full p-2 rounded-lg border border-uncubed-elements-borderColor',
+            'bg-uncubed-elements-prompt-background text-uncubed-elements-textPrimary',
+            'focus-within:outline-none focus-within:ring-2 focus-within:ring-uncubed-elements-focus',
             'transition-all cursor-pointer',
-            isModelDropdownOpen ? 'ring-2 ring-bolt-elements-focus' : undefined,
+            isModelDropdownOpen ? 'ring-2 ring-uncubed-elements-focus' : undefined,
           )}
           onClick={() => setIsModelDropdownOpen(!isModelDropdownOpen)}
           onKeyDown={(e) => {
@@ -399,7 +399,7 @@ export const ModelSelector = ({
             <div className="truncate">{modelList.find((m) => m.name === model)?.label || 'Select model'}</div>
             <div
               className={classNames(
-                'i-ph:caret-down w-4 h-4 text-bolt-elements-textSecondary opacity-75',
+                'i-ph:caret-down w-4 h-4 text-uncubed-elements-textSecondary opacity-75',
                 isModelDropdownOpen ? 'rotate-180' : undefined,
               )}
             />
@@ -408,7 +408,7 @@ export const ModelSelector = ({
 
         {isModelDropdownOpen && (
           <div
-            className="absolute z-10 w-full mt-1 py-1 rounded-lg border border-bolt-elements-borderColor bg-bolt-elements-background-depth-2 shadow-lg"
+            className="absolute z-10 w-full mt-1 py-1 rounded-lg border border-uncubed-elements-borderColor bg-uncubed-elements-background-depth-2 shadow-lg"
             role="listbox"
             id="model-listbox"
           >
@@ -424,17 +424,17 @@ export const ModelSelector = ({
                     }}
                     className={classNames(
                       'flex items-center gap-1.5 px-2 py-1 rounded-md text-xs font-medium transition-all',
-                      'hover:bg-bolt-elements-background-depth-3',
+                      'hover:bg-uncubed-elements-background-depth-3',
                       showFreeModelsOnly
                         ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30'
-                        : 'bg-bolt-elements-background-depth-3 text-bolt-elements-textSecondary border border-bolt-elements-borderColor',
+                        : 'bg-uncubed-elements-background-depth-3 text-uncubed-elements-textSecondary border border-uncubed-elements-borderColor',
                     )}
                   >
                     <span className="i-ph:gift text-xs" />
                     Free models only
                   </button>
                   {showFreeModelsOnly && (
-                    <span className="text-xs text-bolt-elements-textTertiary">
+                    <span className="text-xs text-uncubed-elements-textTertiary">
                       {filteredModels.length} free model{filteredModels.length !== 1 ? 's' : ''}
                     </span>
                   )}
@@ -451,9 +451,9 @@ export const ModelSelector = ({
                   placeholder="Search models..."
                   className={classNames(
                     'w-full pl-2 py-1.5 rounded-md text-sm',
-                    'bg-bolt-elements-background-depth-2 border border-bolt-elements-borderColor',
-                    'text-bolt-elements-textPrimary placeholder:text-bolt-elements-textTertiary',
-                    'focus:outline-none focus:ring-2 focus:ring-bolt-elements-focus',
+                    'bg-uncubed-elements-background-depth-2 border border-uncubed-elements-borderColor',
+                    'text-uncubed-elements-textPrimary placeholder:text-uncubed-elements-textTertiary',
+                    'focus:outline-none focus:ring-2 focus:ring-uncubed-elements-focus',
                     'transition-all',
                   )}
                   onClick={(e) => e.stopPropagation()}
@@ -461,7 +461,7 @@ export const ModelSelector = ({
                   aria-label="Search models"
                 />
                 <div className="absolute left-2.5 top-1/2 -translate-y-1/2">
-                  <span className="i-ph:magnifying-glass text-bolt-elements-textTertiary" />
+                  <span className="i-ph:magnifying-glass text-uncubed-elements-textTertiary" />
                 </div>
               </div>
             </div>
@@ -471,21 +471,21 @@ export const ModelSelector = ({
                 'max-h-60 overflow-y-auto',
                 'sm:scrollbar-none',
                 '[&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar]:h-2',
-                '[&::-webkit-scrollbar-thumb]:bg-bolt-elements-borderColor',
-                '[&::-webkit-scrollbar-thumb]:hover:bg-bolt-elements-borderColorHover',
+                '[&::-webkit-scrollbar-thumb]:bg-uncubed-elements-borderColor',
+                '[&::-webkit-scrollbar-thumb]:hover:bg-uncubed-elements-borderColorHover',
                 '[&::-webkit-scrollbar-thumb]:rounded-full',
-                '[&::-webkit-scrollbar-track]:bg-bolt-elements-background-depth-2',
+                '[&::-webkit-scrollbar-track]:bg-uncubed-elements-background-depth-2',
                 '[&::-webkit-scrollbar-track]:rounded-full',
                 'sm:[&::-webkit-scrollbar]:w-1.5 sm:[&::-webkit-scrollbar]:h-1.5',
-                'sm:hover:[&::-webkit-scrollbar-thumb]:bg-bolt-elements-borderColor/50',
-                'sm:hover:[&::-webkit-scrollbar-thumb:hover]:bg-bolt-elements-borderColor',
+                'sm:hover:[&::-webkit-scrollbar-thumb]:bg-uncubed-elements-borderColor/50',
+                'sm:hover:[&::-webkit-scrollbar-thumb:hover]:bg-uncubed-elements-borderColor',
                 'sm:[&::-webkit-scrollbar-track]:bg-transparent',
               )}
             >
               {modelLoading === 'all' || modelLoading === provider?.name ? (
-                <div className="px-3 py-2 text-sm text-bolt-elements-textTertiary">Loading...</div>
+                <div className="px-3 py-2 text-sm text-uncubed-elements-textTertiary">Loading...</div>
               ) : filteredModels.length === 0 ? (
-                <div className="px-3 py-2 text-sm text-bolt-elements-textTertiary">
+                <div className="px-3 py-2 text-sm text-uncubed-elements-textTertiary">
                   {showFreeModelsOnly ? 'No free models found' : 'No models found'}
                 </div>
               ) : (
@@ -497,13 +497,13 @@ export const ModelSelector = ({
                     aria-selected={model === modelOption.name}
                     className={classNames(
                       'px-3 py-2 text-sm cursor-pointer',
-                      'hover:bg-bolt-elements-background-depth-3',
-                      'text-bolt-elements-textPrimary',
+                      'hover:bg-uncubed-elements-background-depth-3',
+                      'text-uncubed-elements-textPrimary',
                       'outline-none',
                       model === modelOption.name || focusedModelIndex === index
-                        ? 'bg-bolt-elements-background-depth-2'
+                        ? 'bg-uncubed-elements-background-depth-2'
                         : undefined,
-                      focusedModelIndex === index ? 'ring-1 ring-inset ring-bolt-elements-focus' : undefined,
+                      focusedModelIndex === index ? 'ring-1 ring-inset ring-uncubed-elements-focus' : undefined,
                     )}
                     onClick={(e) => {
                       e.stopPropagation();

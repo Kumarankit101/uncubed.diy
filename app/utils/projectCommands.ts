@@ -72,12 +72,12 @@ export function createCommandsMessage(commands: ProjectCommands): Message | null
 
   if (commands.setupCommand) {
     commandString += `
-<boltAction type="shell">${commands.setupCommand}</boltAction>`;
+<uncubedAction type="shell">${commands.setupCommand}</uncubedAction>`;
   }
 
   if (commands.startCommand) {
     commandString += `
-<boltAction type="start">${commands.startCommand}</boltAction>
+<uncubedAction type="start">${commands.startCommand}</uncubedAction>
 `;
   }
 
@@ -85,17 +85,17 @@ export function createCommandsMessage(commands: ProjectCommands): Message | null
     role: 'assistant',
     content: `
 ${commands.followupMessage ? `\n\n${commands.followupMessage}` : ''}
-<boltArtifact id="project-setup" title="Project Setup">
+<uncubedArtifact id="project-setup" title="Project Setup">
 ${commandString}
-</boltArtifact>`,
+</uncubedArtifact>`,
     id: generateId(),
     createdAt: new Date(),
   };
 }
 
-export function escapeBoltArtifactTags(input: string) {
-  // Regular expression to match boltArtifact tags and their content
-  const regex = /(<boltArtifact[^>]*>)([\s\S]*?)(<\/boltArtifact>)/g;
+export function escapeUncubedArtifactTags(input: string) {
+  // Regular expression to match uncubedArtifact tags and their content
+  const regex = /(<uncubedArtifact[^>]*>)([\s\S]*?)(<\/uncubedArtifact>)/g;
 
   return input.replace(regex, (match, openTag, content, closeTag) => {
     // Escape the opening tag
@@ -109,9 +109,9 @@ export function escapeBoltArtifactTags(input: string) {
   });
 }
 
-export function escapeBoltAActionTags(input: string) {
-  // Regular expression to match boltArtifact tags and their content
-  const regex = /(<boltAction[^>]*>)([\s\S]*?)(<\/boltAction>)/g;
+export function escapeUncubedAActionTags(input: string) {
+  // Regular expression to match uncubedArtifact tags and their content
+  const regex = /(<uncubedAction[^>]*>)([\s\S]*?)(<\/uncubedAction>)/g;
 
   return input.replace(regex, (match, openTag, content, closeTag) => {
     // Escape the opening tag
@@ -125,8 +125,8 @@ export function escapeBoltAActionTags(input: string) {
   });
 }
 
-export function escapeBoltTags(input: string) {
-  return escapeBoltArtifactTags(escapeBoltAActionTags(input));
+export function escapeUncubedTags(input: string) {
+  return escapeUncubedArtifactTags(escapeUncubedAActionTags(input));
 }
 
 // We have this seperate function to simplify the restore snapshot process in to one single artifact.
@@ -140,12 +140,12 @@ export function createCommandActionsString(commands: ProjectCommands): string {
 
   if (commands.setupCommand) {
     commandString += `
-<boltAction type="shell">${commands.setupCommand}</boltAction>`;
+<uncubedAction type="shell">${commands.setupCommand}</uncubedAction>`;
   }
 
   if (commands.startCommand) {
     commandString += `
-<boltAction type="start">${commands.startCommand}</boltAction>
+<uncubedAction type="start">${commands.startCommand}</uncubedAction>
 `;
   }
 

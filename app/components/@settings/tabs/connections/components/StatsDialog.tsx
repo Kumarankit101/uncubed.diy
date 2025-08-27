@@ -26,23 +26,23 @@ export function StatsDialog({ isOpen, onClose, onConfirm, stats, isLargeRepo }: 
             transition={{ duration: 0.2 }}
             className="w-[90vw] md:w-[500px]"
           >
-            <Dialog.Content className="bg-white dark:bg-bolt-elements-background-depth-1 rounded-lg border border-bolt-elements-borderColor dark:border-bolt-elements-borderColor-dark shadow-xl">
+            <Dialog.Content className="bg-white dark:bg-uncubed-elements-background-depth-1 rounded-lg border border-uncubed-elements-borderColor dark:border-uncubed-elements-borderColor-dark shadow-xl">
               <div className="p-6 space-y-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-bolt-elements-background-depth-3 flex items-center justify-center text-purple-500">
+                  <div className="w-10 h-10 rounded-xl bg-uncubed-elements-background-depth-3 flex items-center justify-center text-purple-500">
                     <span className="i-ph:git-branch w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-medium text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary-dark">
+                    <h3 className="text-lg font-medium text-uncubed-elements-textPrimary dark:text-uncubed-elements-textPrimary-dark">
                       Repository Overview
                     </h3>
-                    <p className="text-sm text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary-dark">
+                    <p className="text-sm text-uncubed-elements-textSecondary dark:text-uncubed-elements-textSecondary-dark">
                       Review repository details before importing
                     </p>
                   </div>
                 </div>
 
-                <div className="mt-4 bg-bolt-elements-background-depth-2 dark:bg-bolt-elements-background-depth-3 p-4 rounded-lg">
+                <div className="mt-4 bg-uncubed-elements-background-depth-2 dark:bg-uncubed-elements-background-depth-3 p-4 rounded-lg">
                   <RepoStats stats={stats} />
                 </div>
 
@@ -56,10 +56,10 @@ export function StatsDialog({ isOpen, onClose, onConfirm, stats, isLargeRepo }: 
                   </div>
                 )}
               </div>
-              <div className="border-t border-bolt-elements-borderColor dark:border-bolt-elements-borderColor-dark p-4 flex justify-end gap-3 bg-bolt-elements-background-depth-2 dark:bg-bolt-elements-background-depth-3 rounded-b-lg">
+              <div className="border-t border-uncubed-elements-borderColor dark:border-uncubed-elements-borderColor-dark p-4 flex justify-end gap-3 bg-uncubed-elements-background-depth-2 dark:bg-uncubed-elements-background-depth-3 rounded-b-lg">
                 <motion.button
                   onClick={onClose}
-                  className="px-4 py-2 rounded-lg bg-bolt-elements-background-depth-3 dark:bg-bolt-elements-background-depth-4 text-bolt-elements-textSecondary hover:text-bolt-elements-textPrimary dark:text-bolt-elements-textSecondary-dark dark:hover:text-bolt-elements-textPrimary-dark transition-colors"
+                  className="px-4 py-2 rounded-lg bg-uncubed-elements-background-depth-3 dark:bg-uncubed-elements-background-depth-4 text-uncubed-elements-textSecondary hover:text-uncubed-elements-textPrimary dark:text-uncubed-elements-textSecondary-dark dark:hover:text-uncubed-elements-textPrimary-dark transition-colors"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >

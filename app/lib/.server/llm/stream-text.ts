@@ -27,9 +27,12 @@ export interface StreamingOptions extends Omit<Parameters<typeof _streamText>[0]
 const logger = createScopedLogger('stream-text');
 
 function sanitizeText(text: string): string {
-  let sanitized = text.replace(/<div class=\\"__boltThought__\\">.*?<\/div>/s, '');
+  let sanitized = text.replace(/<div class=\\"__uncubedThought__\\">.*?<\/div>/s, '');
   sanitized = sanitized.replace(/<think>.*?<\/think>/s, '');
-  sanitized = sanitized.replace(/<boltAction type="file" filePath="package-lock\.json">[\s\S]*?<\/boltAction>/g, '');
+  sanitized = sanitized.replace(
+    /<uncubedAction type="file" filePath="package-lock\.json">[\s\S]*?<\/uncubedAction>/g,
+    '',
+  );
 
   return sanitized.trim();
 }

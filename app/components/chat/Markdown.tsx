@@ -32,7 +32,7 @@ export const Markdown = memo(
         div: ({ className, children, node, ...props }) => {
           const dataProps = node?.properties as Record<string, unknown>;
 
-          if (className?.includes('__boltArtifact__')) {
+          if (className?.includes('__uncubedArtifact__')) {
             const messageId = node?.properties.dataMessageId as string;
 
             if (!messageId) {
@@ -42,7 +42,7 @@ export const Markdown = memo(
             return <Artifact messageId={messageId} />;
           }
 
-          if (className?.includes('__boltSelectedElement__')) {
+          if (className?.includes('__uncubedSelectedElement__')) {
             const messageId = node?.properties.dataMessageId as string;
             const elementDataAttr = node?.properties.dataElement as string;
 
@@ -62,27 +62,27 @@ export const Markdown = memo(
             }
 
             return (
-              <div className="bg-bolt-elements-background-depth-3 border border-bolt-elements-borderColor rounded-lg p-3 my-2">
+              <div className="bg-uncubed-elements-background-depth-3 border border-uncubed-elements-borderColor rounded-lg p-3 my-2">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="text-xs font-mono bg-bolt-elements-background-depth-2 px-2 py-1 rounded text-bolt-elements-textTer">
+                  <span className="text-xs font-mono bg-uncubed-elements-background-depth-2 px-2 py-1 rounded text-uncubed-elements-textTer">
                     {elementData?.tagName}
                   </span>
                   {elementData?.className && (
-                    <span className="text-xs text-bolt-elements-textSecondary">.{elementData.className}</span>
+                    <span className="text-xs text-uncubed-elements-textSecondary">.{elementData.className}</span>
                   )}
                 </div>
-                <code className="block text-sm !text-bolt-elements-textSecondary !bg-bolt-elements-background-depth-2 border border-bolt-elements-borderColor p-2 rounded">
+                <code className="block text-sm !text-uncubed-elements-textSecondary !bg-uncubed-elements-background-depth-2 border border-uncubed-elements-borderColor p-2 rounded">
                   {elementData?.displayText}
                 </code>
               </div>
             );
           }
 
-          if (className?.includes('__boltThought__')) {
+          if (className?.includes('__uncubedThought__')) {
             return <ThoughtBox title="Thought process">{children}</ThoughtBox>;
           }
 
-          if (className?.includes('__boltQuickAction__') || dataProps?.dataBoltQuickAction) {
+          if (className?.includes('__uncubedQuickAction__') || dataProps?.dataUncubedQuickAction) {
             return <div className="flex items-center gap-2 flex-wrap mt-3.5">{children}</div>;
           }
 
@@ -115,8 +115,8 @@ export const Markdown = memo(
           const dataProps = node?.properties as Record<string, unknown>;
 
           if (
-            dataProps?.class?.toString().includes('__boltQuickAction__') ||
-            dataProps?.dataBoltQuickAction === 'true'
+            dataProps?.class?.toString().includes('__uncubedQuickAction__') ||
+            dataProps?.dataUncubedQuickAction === 'true'
           ) {
             const type = dataProps['data-type'] || dataProps.dataType;
             const message = dataProps['data-message'] || dataProps.dataMessage;
@@ -135,7 +135,7 @@ export const Markdown = memo(
 
             return (
               <button
-                className="rounded-md justify-center px-3 py-1.5 text-xs bg-bolt-elements-item-backgroundAccent text-bolt-elements-item-contentAccent opacity-90 hover:opacity-100 flex items-center gap-2 cursor-pointer"
+                className="rounded-md justify-center px-3 py-1.5 text-xs bg-uncubed-elements-item-backgroundAccent text-uncubed-elements-item-contentAccent opacity-90 hover:opacity-100 flex items-center gap-2 cursor-pointer"
                 data-type={type}
                 data-message={message}
                 data-path={path}
@@ -211,23 +211,23 @@ export const Markdown = memo(
  *
  * @example
  * // Removes code fences around artifact
- * const input = "```xml\n<div class='__boltArtifact__'></div>\n```";
+ * const input = "```xml\n<div class='__uncubedArtifact__'></div>\n```";
  * stripCodeFenceFromArtifact(input);
- * // Returns: "\n<div class='__boltArtifact__'></div>\n"
+ * // Returns: "\n<div class='__uncubedArtifact__'></div>\n"
  *
  * @remarks
- * - Only removes code fences that directly wrap an artifact (marked with __boltArtifact__ class)
+ * - Only removes code fences that directly wrap an artifact (marked with __uncubedArtifact__ class)
  * - Handles code fences with optional language specifications (e.g. ```xml, ```typescript)
  * - Preserves original content if no artifact is found
  * - Safely handles edge cases like empty input or artifacts at start/end of content
  */
 export const stripCodeFenceFromArtifact = (content: string) => {
-  if (!content || !content.includes('__boltArtifact__')) {
+  if (!content || !content.includes('__uncubedArtifact__')) {
     return content;
   }
 
   const lines = content.split('\n');
-  const artifactLineIndex = lines.findIndex((line) => line.includes('__boltArtifact__'));
+  const artifactLineIndex = lines.findIndex((line) => line.includes('__uncubedArtifact__'));
 
   // Return original content if artifact line not found
   if (artifactLineIndex === -1) {
