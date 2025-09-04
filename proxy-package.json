@@ -1,0 +1,17 @@
+{
+  "name": "bolt-diy-reverse-proxy",
+  "version": "1.0.0",
+  "description": "Reverse proxy for Bolt.DIY development",
+  "main": "reverse-proxy.js",
+  "scripts": {
+    "start": "node reverse-proxy.js",
+    "dev": "nodemon reverse-proxy.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "http-proxy-middleware": "^2.0.6"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

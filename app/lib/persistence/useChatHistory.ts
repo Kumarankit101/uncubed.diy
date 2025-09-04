@@ -180,7 +180,7 @@ ${value.content}
             chatId.set(storedMessages.id);
             chatMetadata.set(storedMessages.metadata);
           } else {
-            navigate('/', { replace: true });
+            navigate('/diy/', { replace: true });
           }
 
           setReady(true);
@@ -349,7 +349,7 @@ ${value.content}
 
       try {
         const newId = await duplicateChat(db, mixedId || listItemId);
-        navigate(`/chat/${newId}`);
+        navigate(`/diy/chat/${newId}`);
         toast.success('Chat duplicated successfully');
       } catch (error) {
         toast.error('Failed to duplicate chat');
@@ -363,7 +363,7 @@ ${value.content}
 
       try {
         const newId = await createChatFromMessages(db, description, messages, metadata);
-        window.location.href = `/chat/${newId}`;
+        window.location.href = `/diy/chat/${newId}`;
         toast.success('Chat imported successfully');
       } catch (error) {
         if (error instanceof Error) {
@@ -405,7 +405,7 @@ function navigateChat(nextId: string) {
    * `navigate(`/chat/${nextId}`, { replace: true });`
    */
   const url = new URL(window.location.href);
-  url.pathname = `/chat/${nextId}`;
+  url.pathname = `/diy/chat/${nextId}`;
 
   window.history.replaceState({}, '', url);
 }

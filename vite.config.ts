@@ -13,6 +13,7 @@ dotenv.config();
 
 export default defineConfig((config) => {
   return {
+    base: '/diy/',
     define: {
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
     },
@@ -51,6 +52,7 @@ export default defineConfig((config) => {
           v3_throwAbortReason: true,
           v3_lazyRouteDiscovery: true,
         },
+        basename: '/diy/',
       }),
       UnoCSS(),
       tsconfigPaths(),

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test API Override</title>
+</head>
+<body>
+    <h1>Testing API Override</h1>
+    <button onclick="testApiCall()">Test API Call</button>
+    <div id="result"></div>
+
+    <script>
+        // Test the fetch override
+        function testApiCall() {
+            console.log('Testing API call to /api/health');
+            fetch('/api/health')
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    document.getElementById('result').innerHTML = 'Status: ' + response.status;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('result').innerHTML = 'Error: ' + error.message;
+                });
+        }
+    </script>
+</body>
+</html>

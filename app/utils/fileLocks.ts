@@ -16,7 +16,7 @@ export function getCurrentChatId(): string {
   try {
     if (typeof window !== 'undefined') {
       // Extract chat ID from URL (format: /chat/123)
-      const match = window.location.pathname.match(/\/chat\/([^/]+)/);
+      const match = window.location.pathname.match(/\/diy\/chat\/([^/]+)/);
 
       if (match && match[1]) {
         return match[1];

@@ -34,7 +34,7 @@ if (!import.meta.env.SSR) {
 
         const { workbenchStore } = await import('~/lib/stores/workbench');
 
-        const response = await fetch('/inspector-script.js');
+        const response = await fetch('/diy/inspector-script.js');
         const inspectorScript = await response.text();
         await webcontainer.setPreviewScript(inspectorScript);
 
