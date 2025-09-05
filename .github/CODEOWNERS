@@ -1,0 +1,30 @@
+# Code Owners for uncubed.diy
+# These users/teams will automatically be requested for review when files are modified
+
+# Global ownership - repository maintainers
+* @stackblitz-labs/uncubed-maintainers
+
+# GitHub workflows and CI/CD configuration - require maintainer review
+/.github/ @stackblitz-labs/uncubed-maintainers
+/package.json @stackblitz-labs/uncubed-maintainers
+/pnpm-lock.yaml @stackblitz-labs/uncubed-maintainers
+
+# Security-sensitive configurations - require maintainer review
+/.env* @stackblitz-labs/uncubed-maintainers
+/wrangler.toml @stackblitz-labs/uncubed-maintainers  
+/Dockerfile @stackblitz-labs/uncubed-maintainers
+/docker-compose.yaml @stackblitz-labs/uncubed-maintainers
+
+# Core application architecture - require maintainer review
+/app/lib/.server/ @stackblitz-labs/uncubed-maintainers
+/app/routes/api.* @stackblitz-labs/uncubed-maintainers
+
+# Build and deployment configuration - require maintainer review
+/vite*.config.ts @stackblitz-labs/uncubed-maintainers
+/tsconfig.json @stackblitz-labs/uncubed-maintainers
+/uno.config.ts @stackblitz-labs/uncubed-maintainers
+/eslint.config.mjs @stackblitz-labs/uncubed-maintainers
+
+# Documentation (optional review)
+/*.md
+/docs/

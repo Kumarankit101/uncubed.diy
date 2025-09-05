@@ -19,7 +19,7 @@ import 'virtual:uno.css';
 export const links: LinksFunction = () => [
   {
     rel: 'icon',
-    href: '/favicon.svg',
+    href: '/diy/favicon.svg',
     type: 'image/svg+xml',
   },
   { rel: 'stylesheet', href: reactToastifyStyles },
@@ -55,6 +55,34 @@ const inlineThemeCode = stripIndents`
   }
 `;
 
+const inlineFetchOverrideCode = stripIndents`
+  // Global fetch override for /diy base path
+  (function() {
+    if (typeof window !== 'undefined' && window.fetch) {
+      console.log('🔧 Initializing early global fetch override for /diy base path');
+      
+      const originalFetch = window.fetch;
+      
+      window.fetch = function(input, init) {
+        if (typeof input === 'string' && input.startsWith('/api')) {
+          console.log('🔄 Early redirecting API call:', input, '→', '/diy' + input);
+          const url = new URL(input, window.location.origin);
+          url.pathname = '/diy' + url.pathname;
+          return originalFetch(url.toString(), init);
+        } else if (input instanceof URL && input.pathname.startsWith('/api')) {
+          console.log('🔄 Early redirecting API call:', input.pathname, '→', '/diy' + input.pathname);
+          const url = new URL(input);
+          url.pathname = '/diy' + url.pathname;
+          return originalFetch(url.toString(), init);
+        }
+        return originalFetch(input, init);
+      };
+      
+      console.log('✅ Early global fetch override initialized successfully');
+    }
+  })();
+`;
+
 export const Head = createHead(() => (
   <>
     <meta charSet="utf-8" />
@@ -62,6 +90,7 @@ export const Head = createHead(() => (
     <Meta />
     <Links />
     <script dangerouslySetInnerHTML={{ __html: inlineThemeCode }} />
+    <script dangerouslySetInnerHTML={{ __html: inlineFetchOverrideCode }} />
   </>
 ));
 
@@ -87,6 +116,9 @@ export default function App() {
   const theme = useStore(themeStore);
 
   useEffect(() => {
+    // Import and initialize global fetch override on client side only
+    import('./utils/globalFetch');
+
     logStore.logSystem('Application initialized', {
       theme,
       platform: navigator.platform,

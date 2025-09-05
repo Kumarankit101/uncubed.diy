@@ -112,7 +112,7 @@ export const ToolInvocations = memo(({ toolInvocations, toolCallAnnotations, add
           <div className="p-2.5">
             <div className="i-ph:wrench text-xl text-uncubed-elements-textSecondary hover:text-uncubed-elements-textPrimary transition-colors"></div>
           </div>
-          <div className="border-l border-uncubed-elements-borderColor p-2.5 w-full text-left">
+          <div className="p-2.5 w-full text-left">
             <div className="w-full text-uncubed-elements-textPrimary font-medium leading-5 text-sm">
               MCP Tool Invocations{' '}
               {hasToolResults && (
@@ -153,7 +153,7 @@ export const ToolInvocations = memo(({ toolInvocations, toolCallAnnotations, add
           >
             <div className="bg-uncubed-elements-artifacts-borderColor h-[1px]" />
 
-            <div className="px-3 py-3 text-left bg-uncubed-elements-actions-background">
+            <div className="px-3 py-3 text-left bg-uncubed-elements-background-depth-2">
               <ToolCallsList
                 toolInvocations={toolCalls}
                 toolCallAnnotations={toolCallAnnotations}
@@ -273,18 +273,11 @@ interface ToolCallsListProps {
   theme: Theme;
 }
 
-const ToolCallsList = memo(({ toolInvocations, toolCallAnnotations, addToolResult, theme }: ToolCallsListProps) => {
+const ToolCallsList = memo(({ toolInvocations, toolCallAnnotations, addToolResult }: ToolCallsListProps) => {
   const [expanded, setExpanded] = useState<{ [id: string]: boolean }>({});
 
   // OS detection for shortcut display
   const isMac = typeof navigator !== 'undefined' && /Mac|iPod|iPhone|iPad/.test(navigator.platform);
-
-  const toggleExpand = (toolCallId: string) => {
-    setExpanded((prev) => ({
-      ...prev,
-      [toolCallId]: !prev[toolCallId],
-    }));
-  };
 
   useEffect(() => {
     const expandedState: { [id: string]: boolean } = {};
@@ -360,51 +353,20 @@ const ToolCallsList = memo(({ toolInvocations, toolCallAnnotations, addToolResul
               animate="visible"
               transition={{ duration: 0.2, ease: cubicEasingFn }}
             >
-              <div className="">
-                <div key={toolCallId} className="flex flex-col gap-1">
-                  <div className="flex items-center text-uncubed-elements-textSecondary font-semibold text-sm">
-                    <button
-                      onClick={() => toggleExpand(toolCallId)}
-                      className="mr-1 focus:outline-none bg-transparent"
-                      aria-label={expanded[toolCallId] ? 'Collapse' : 'Expand'}
-                      tabIndex={0}
-                      type="button"
-                    >
-                      <span
-                        className={`i-ph:caret-down-bold inline-block transition-transform duration-150 ${expanded[toolCallId] ? '' : '-rotate-90'}`}
-                      />
-                    </button>
-                    Calling MCP tool{' '}
-                    <span className="ml-0.5 font-light font-mono text-uncubed-elements-textPrimary bg-uncubed-elements-background-depth-3 px-1.5 py-0.5 rounded-md">
+              <div className="bg-uncubed-elements-background-depth-3 rounded-lg p-2">
+                <div key={toolCallId} className="flex gap-1">
+                  <div className="flex flex-col items-center ">
+                    <span className="mr-auto font-light font-normal text-md text-uncubed-elements-textPrimary rounded-md">
                       {toolName}
                     </span>
+                    <span className="text-xs text-uncubed-elements-textSecondary font-light break-words max-w-64">
+                      {annotation?.toolDescription}
+                    </span>
                   </div>
-                  {expanded[toolCallId] && (
-                    <div className="flex gap-3">
-                      <div className="w-[0.1px] min-h-[40px] bg-uncubed-elements-background-depth-3 ml-1.5" />
-                      <div className="flex flex-col gap-1 w-full">
-                        <div className="text-uncubed-elements-textSecondary text-xs mb-1">
-                          Description:{' '}
-                          <span className="text-uncubed-elements-textPrimary font-semibold">
-                            {annotation?.toolDescription}
-                          </span>
-                        </div>
-                        <div className="flex w-full items-stretch space-x-2">
-                          <div className="w-full rounded-md bg-uncubed-elements-background-depth-3 p-3 ml-0 border-l-2 border-uncubed-elements-borderColor">
-                            <JsonCodeBlock
-                              className="mb-0"
-                              code={JSON.stringify(tool.toolInvocation.args, null, 2)}
-                              theme={theme}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  <div className="flex justify-end gap-2 pt-2.5">
+                  <div className="flex items-center justify-end gap-2 ml-auto">
                     <button
                       className={classNames(
-                        'px-2.5 py-1.5 rounded-lg text-xs',
+                        'h-10 px-2.5 py-1.5 rounded-lg text-xs h-auto',
                         'bg-transparent',
                         'text-uncubed-elements-textTertiary hover:text-uncubed-elements-textPrimary',
                         'transition-all duration-200',
@@ -421,9 +383,9 @@ const ToolCallsList = memo(({ toolInvocations, toolCallAnnotations, addToolResul
                     </button>
                     <button
                       className={classNames(
-                        'inline-flex items-center gap-2 px-3.5 py-1.5 text-xs font-normal rounded-lg transition-colors',
-                        'bg-accent-500 hover:bg-accent-600',
-                        'text-black',
+                        'h-10 inline-flex items-center gap-2 px-3 py-1.5 text-xs font-normal rounded-lg transition-colors',
+                        'bg-uncubed-elements-background-depth-2 border border-uncubed-elements-borderColor',
+                        'text-accent-500 hover:text-uncubed-elements-textPrimary',
                         'disabled:opacity-50 disabled:cursor-not-allowed',
                       )}
                       onClick={() =>

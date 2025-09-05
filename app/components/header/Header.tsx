@@ -17,10 +17,10 @@ export function Header() {
     >
       <div className="flex items-center gap-2 z-logo text-uncubed-elements-textPrimary cursor-pointer">
         <div className="i-ph:sidebar-simple-duotone text-xl" />
-        <a href="/" className="text-2xl font-semibold text-accent flex items-center">
+        <a href="/diy/" className="text-2xl font-semibold text-accent flex items-center">
           {/* <span className="i-uncubed:logo-text?mask w-[46px] inline-block" /> */}
-          <img src="/logo-light-styled.svg" alt="logo" className="w-[18px] inline-block dark:hidden" />
-          <img src="/logo-dark-styled.svg" alt="logo" className="w-[18px] inline-block hidden dark:block" />
+          <img src="/diy/logo-light-styled.svg" alt="logo" className="w-[18px] inline-block dark:hidden" />
+          <img src="/diy/logo-dark-styled.svg" alt="logo" className="w-[18px] inline-block hidden dark:block" />
         </a>
       </div>
       {chat.started && ( // Display ChatDescription and HeaderActionButtons only when the chat has started.
