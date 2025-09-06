@@ -13,13 +13,17 @@ import {
 } from 'chart.js';
 import { Bar, Pie } from 'react-chartjs-2';
 import type { Chat } from '~/lib/persistence/chats';
+
+type ExtendedChat = Omit<Chat, 'updatedAt'> & {
+  updatedAt?: number;
+};
 import { classNames } from '~/utils/classNames';
 
 // Register ChartJS components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement, PointElement, LineElement);
 
 type DataVisualizationProps = {
-  chats: Chat[];
+  chats: ExtendedChat[];
 };
 
 export function DataVisualization({ chats }: DataVisualizationProps) {

@@ -17,6 +17,7 @@ export interface Chat {
   description?: string;
   messages: Message[];
   timestamp: string;
+  updatedAt: string;
   urlId?: string;
   metadata?: IChatMetadata;
 }

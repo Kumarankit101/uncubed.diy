@@ -19,7 +19,7 @@ export async function openDatabase(): Promise<IDBDatabase | undefined> {
   }
 
   return new Promise((resolve) => {
-    const request = indexedDB.open('uncubedHistory', 2);
+    const request = indexedDB.open('uncubedHistory', 3);
 
     request.onupgradeneeded = (event: IDBVersionChangeEvent) => {
       const db = (event.target as IDBOpenDBRequest).result;
@@ -37,6 +37,15 @@ export async function openDatabase(): Promise<IDBDatabase | undefined> {
         if (!db.objectStoreNames.contains('snapshots')) {
           db.createObjectStore('snapshots', { keyPath: 'chatId' });
         }
+      }
+
+      if (oldVersion < 3) {
+        const txn = (event.target as IDBOpenDBRequest).transaction!;
+        const chatStore = txn.objectStore('chats');
+        chatStore.createIndex('updatedAt', 'updatedAt', {});
+
+        const snapshotStore = txn.objectStore('snapshots');
+        snapshotStore.createIndex('updatedAt', 'updatedAt', {});
       }
     };
 
@@ -86,6 +95,7 @@ export async function setMessages(
       urlId,
       description,
       timestamp: timestamp ?? new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
       metadata,
     });
 
@@ -317,7 +327,7 @@ export async function setSnapshot(db: IDBDatabase, chatId: string, snapshot: Sna
   return new Promise((resolve, reject) => {
     const transaction = db.transaction('snapshots', 'readwrite');
     const store = transaction.objectStore('snapshots');
-    const request = store.put({ chatId, snapshot });
+    const request = store.put({ chatId, snapshot, updatedAt: new Date().toISOString() });
 
     request.onsuccess = () => resolve();
     request.onerror = () => reject(request.error);

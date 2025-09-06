@@ -15,6 +15,7 @@ import globalStyles from './styles/index.scss?url';
 import xtermStyles from '@xterm/xterm/css/xterm.css?url';
 
 import 'virtual:uno.css';
+import { useSyncService } from '~/lib/services/useSyncService';
 
 export const links: LinksFunction = () => [
   {
@@ -113,14 +114,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
 import { logStore } from './lib/stores/logs';
 
 export default function App() {
+  const { lastSyncedAt } = useSyncService();
   const theme = useStore(themeStore);
 
   useEffect(() => {
-    // Import and initialize global fetch override on client side only
     import('./utils/globalFetch');
-
     logStore.logSystem('Application initialized', {
       theme,
+      lastSyncedAt,
       platform: navigator.platform,
       userAgent: navigator.userAgent,
       timestamp: new Date().toISOString(),

@@ -42,22 +42,22 @@ function useUncubedHistoryDB() {
   return { db, isLoading, error };
 }
 
-// Extend the Chat interface to include the missing properties
-interface ExtendedChat extends Chat {
+// ExtendedChat type with numeric updatedAt and optional title
+type ExtendedChat = Omit<Chat, 'updatedAt'> & {
   title?: string;
   updatedAt?: number;
-}
+};
 
 // Helper function to create a chat label and description
-function createChatItem(chat: Chat): ChatItem {
+function createChatItem(chat: ExtendedChat): ChatItem {
   return {
     id: chat.id,
 
     // Use description as title if available, or format a short ID
-    label: (chat as ExtendedChat).title || chat.description || `Chat ${chat.id.slice(0, 8)}`,
+    label: chat.title || chat.description || `Chat ${chat.id.slice(0, 8)}`,
 
     // Format the description with message count and timestamp
-    description: `${chat.messages.length} messages - Last updated: ${new Date((chat as ExtendedChat).updatedAt || Date.parse(chat.timestamp)).toLocaleString()}`,
+    description: `${chat.messages.length} messages - Last updated: ${new Date(chat.updatedAt ?? Date.parse(chat.timestamp)).toLocaleString()}`,
   };
 }
 
@@ -123,8 +123,10 @@ export function DataTab() {
       // Reload chats after reset
       if (db) {
         getAllChats(db).then((chats) => {
-          // Cast to ExtendedChat to handle additional properties
-          const extendedChats = chats as ExtendedChat[];
+          const extendedChats: ExtendedChat[] = chats.map((chat) => ({
+            ...chat,
+            updatedAt: Date.parse(chat.updatedAt),
+          }));
           setAvailableChats(extendedChats);
           setChatItems(extendedChats.map((chat) => createChatItem(chat)));
         });
@@ -151,11 +153,11 @@ export function DataTab() {
         .then((chats) => {
           console.log('Found chats:', chats.length);
 
-          // Cast to ExtendedChat to handle additional properties
-          const extendedChats = chats as ExtendedChat[];
+          const extendedChats: ExtendedChat[] = chats.map((chat) => ({
+            ...chat,
+            updatedAt: Date.parse(chat.updatedAt),
+          }));
           setAvailableChats(extendedChats);
-
-          // Create ChatItems for selection dialog
           setChatItems(extendedChats.map((chat) => createChatItem(chat)));
         })
         .catch((error) => {
