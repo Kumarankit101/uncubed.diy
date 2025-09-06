@@ -1,10 +1,13 @@
 import React from 'react';
 import { ClientOnly } from 'remix-utils/client-only';
 import { classNames } from '~/utils/classNames';
-import { PROVIDER_LIST } from '~/utils/constants';
-import { ModelSelector } from '~/components/chat/ModelSelector';
-import { APIKeyManager } from './APIKeyManager';
-import { LOCAL_PROVIDERS } from '~/lib/stores/settings';
+
+/*
+ * import { PROVIDER_LIST } from '~/utils/constants';
+ * import { ModelSelector } from '~/components/chat/ModelSelector';
+ * import { APIKeyManager } from './APIKeyManager';
+ * import { LOCAL_PROVIDERS } from '~/lib/stores/settings';
+ */
 import FilePreview from './FilePreview';
 import { ScreenshotStateManager } from './ScreenshotStateManager';
 import { SendButton } from './SendButton.client';
@@ -103,7 +106,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
         <rect className={classNames(styles.PromptShine)} x="48" y="24" width="70" height="1"></rect>
       </svg>
       <div>
-        <ClientOnly>
+        {/* <ClientOnly>
           {() => (
             <div className={props.isModelSettingsCollapsed ? 'hidden' : ''}>
               <ModelSelector
@@ -130,7 +133,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
                 )}
             </div>
           )}
-        </ClientOnly>
+        </ClientOnly> */}
       </div>
       <FilePreview
         files={props.uploadedFiles}

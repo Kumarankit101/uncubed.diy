@@ -381,7 +381,7 @@ export const Preview = memo(({ setSelectedElement }: PreviewProps) => {
 
       if (match) {
         const previewId = match[1];
-        const previewUrl = `/webcontainer/preview/${previewId}`;
+        const previewUrl = `/diy/webcontainer/preview/${previewId}`;
 
         // Adjust dimensions for landscape mode if applicable
         let width = size.width;
@@ -796,7 +796,7 @@ export const Preview = memo(({ setSelectedElement }: PreviewProps) => {
                           }
 
                           const previewId = match[1];
-                          const previewUrl = `/webcontainer/preview/${previewId}`;
+                          const previewUrl = `/diy/webcontainer/preview/${previewId}`;
 
                           // Open in a new window with simple parameters
                           window.open(

@@ -84,10 +84,10 @@ export function HeaderActionButtons({ chatStarted }: HeaderActionButtonsProps) {
       )}
 
       {/* Deploy Button */}
-      {shouldShowButtons && <DeployButton />}
+      {shouldShowButtons && false && <DeployButton />}
 
       {/* Bug Report Button */}
-      {shouldShowButtons && (
+      {shouldShowButtons && false && (
         <div className="flex border border-uncubed-elements-borderColor rounded-md overflow-hidden text-sm">
           <button
             onClick={() =>

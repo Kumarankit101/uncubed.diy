@@ -4,7 +4,8 @@ import { toast } from 'react-toastify';
 import { Dialog, DialogButton, DialogDescription, DialogRoot, DialogTitle } from '~/components/ui/Dialog';
 import { ThemeSwitch } from '~/components/ui/ThemeSwitch';
 import { ControlPanel } from '~/components/@settings/core/ControlPanel';
-import { SettingsButton } from '~/components/ui/SettingsButton';
+
+// import { SettingsButton } from '~/components/ui/SettingsButton';
 import { Button } from '~/components/ui/Button';
 import { db, deleteById, getAll, chatId, type ChatHistoryItem, useChatHistory } from '~/lib/persistence';
 import { cubicEasingFn } from '~/utils/easings';
@@ -12,8 +13,11 @@ import { HistoryItem } from './HistoryItem';
 import { binDates } from './date-binning';
 import { useSearchFilter } from '~/lib/hooks/useSearchFilter';
 import { classNames } from '~/utils/classNames';
-import { useStore } from '@nanostores/react';
-import { profileStore } from '~/lib/stores/profile';
+
+/*
+ * import { useStore } from '@nanostores/react';
+ * import { profileStore } from '~/lib/stores/profile';
+ */
 
 const menuVariants = {
   closed: {
@@ -41,27 +45,35 @@ type DialogContent =
   | { type: 'bulkDelete'; items: ChatHistoryItem[] }
   | null;
 
-function CurrentDateTime() {
-  const [dateTime, setDateTime] = useState(new Date());
+/*
+ * function CurrentDateTime() {
+ *   const [dateTime, setDateTime] = useState(new Date());
+ */
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setDateTime(new Date());
-    }, 60000);
+/*
+ *   useEffect(() => {
+ *     const timer = setInterval(() => {
+ *       setDateTime(new Date());
+ *     }, 60000);
+ */
 
-    return () => clearInterval(timer);
-  }, []);
+/*
+ *     return () => clearInterval(timer);
+ *   }, []);
+ */
 
-  return (
-    <div className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 dark:text-gray-400 border-b border-gray-100 dark:border-gray-800/50">
-      <div className="h-4 w-4 i-ph:clock opacity-80" />
-      <div className="flex gap-2">
-        <span>{dateTime.toLocaleDateString()}</span>
-        <span>{dateTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-      </div>
-    </div>
-  );
-}
+/*
+ *   return (
+ *     <div className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 dark:text-gray-400 border-b border-gray-100 dark:border-gray-800/50">
+ *       <div className="h-4 w-4 i-ph:clock opacity-80" />
+ *       <div className="flex gap-2">
+ *         <span>{dateTime.toLocaleDateString()}</span>
+ *         <span>{dateTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+ *       </div>
+ *     </div>
+ *   );
+ * }
+ */
 
 export const Menu = () => {
   const { duplicateCurrentChat, exportChat } = useChatHistory();
@@ -70,7 +82,8 @@ export const Menu = () => {
   const [open, setOpen] = useState(false);
   const [dialogContent, setDialogContent] = useState<DialogContent>(null);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const profile = useStore(profileStore);
+
+  // const profile = useStore(profileStore);
   const [selectionMode, setSelectionMode] = useState(false);
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
 
@@ -308,10 +321,12 @@ export const Menu = () => {
     loadEntries(); // Reload the list after duplication
   };
 
-  const handleSettingsClick = () => {
-    setIsSettingsOpen(true);
-    setOpen(false);
-  };
+  /*
+   * const handleSettingsClick = () => {
+   *   setIsSettingsOpen(true);
+   *   setOpen(false);
+   * };
+   */
 
   const handleSettingsClose = () => {
     setIsSettingsOpen(false);
@@ -339,7 +354,7 @@ export const Menu = () => {
       >
         <div className="h-12 flex items-center justify-between px-4 border-b border-gray-100 dark:border-gray-800/50 bg-gray-50/50 dark:bg-gray-900/50 rounded-tr-2xl">
           <div className="text-gray-900 dark:text-white font-medium"></div>
-          <div className="flex items-center gap-3">
+          {/* <div className="flex items-center gap-3">
             <span className="font-medium text-sm text-gray-900 dark:text-white truncate">
               {profile?.username || 'Guest User'}
             </span>
@@ -356,9 +371,9 @@ export const Menu = () => {
                 <div className="i-ph:user-fill text-lg" />
               )}
             </div>
-          </div>
+          </div> */}
         </div>
-        <CurrentDateTime />
+        {/* <CurrentDateTime /> */}
         <div className="flex-1 flex flex-col h-full w-full overflow-hidden">
           <div className="p-4 space-y-3">
             <div className="flex gap-2">
@@ -525,7 +540,7 @@ export const Menu = () => {
             </DialogRoot>
           </div>
           <div className="flex items-center justify-between border-t border-gray-200 dark:border-gray-800 px-4 py-3">
-            <SettingsButton onClick={handleSettingsClick} />
+            {/* <SettingsButton onClick={handleSettingsClick} /> */}
             <ThemeSwitch />
           </div>
         </div>
