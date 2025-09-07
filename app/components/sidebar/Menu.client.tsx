@@ -8,6 +8,7 @@ import { ControlPanel } from '~/components/@settings/core/ControlPanel';
 // import { SettingsButton } from '~/components/ui/SettingsButton';
 import { Button } from '~/components/ui/Button';
 import { db, deleteById, getAll, chatId, type ChatHistoryItem, useChatHistory } from '~/lib/persistence';
+import { getMessages, getSnapshot } from '~/lib/persistence/db';
 import { cubicEasingFn } from '~/utils/easings';
 import { HistoryItem } from './HistoryItem';
 import { binDates } from './date-binning';
@@ -107,7 +108,46 @@ export const Menu = () => {
         throw new Error('Database not available');
       }
 
-      // Delete chat snapshot from localStorage
+      // Mark chat as deleted on server before local removal
+      try {
+        const record: ChatHistoryItem = await getMessages(db, id);
+        const snapshotData = await getSnapshot(db, id).catch(() => undefined);
+        const deletionPayload = {
+          chats: [
+            {
+              id: record.id,
+              url_id: record.urlId,
+              description: record.description,
+              messages: record.messages,
+              timestamp: record.timestamp,
+              updated_at: new Date().toISOString(),
+              metadata: record.metadata,
+              is_deleted: true,
+            },
+          ],
+          snapshots: snapshotData
+            ? [
+                {
+                  chat_id: id,
+                  chat_index: snapshotData.chatIndex,
+                  files: snapshotData.files,
+                  summary: snapshotData.summary,
+                  updated_at: new Date().toISOString(),
+                  is_deleted: true,
+                },
+              ]
+            : [],
+        };
+        await fetch('/api/sync-data', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(deletionPayload),
+        });
+      } catch (err) {
+        console.error('Failed to mark chat deleted on server:', err);
+      }
+
+      // Remove snapshot entry from localStorage
       try {
         const snapshotKey = `snapshot:${id}`;
         localStorage.removeItem(snapshotKey);
@@ -116,9 +156,9 @@ export const Menu = () => {
         console.error(`Error deleting snapshot for chat ${id}:`, snapshotError);
       }
 
-      // Delete the chat from the database
+      // Delete the chat from IndexedDB
       await deleteById(db, id);
-      console.log('Successfully deleted chat:', id);
+      console.log('Successfully deleted chat locally:', id);
     },
     [db],
   );
