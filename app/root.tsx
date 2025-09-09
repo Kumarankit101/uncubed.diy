@@ -4,6 +4,7 @@ import { Links, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/reac
 import tailwindReset from '@unocss/reset/tailwind-compat.css?url';
 import { themeStore } from './lib/stores/theme';
 import { projectStore, setProjectId } from './lib/stores/project';
+import { chatStore } from './lib/stores/chat';
 import { stripIndents } from './utils/stripIndent';
 import { createHead } from 'remix-island';
 import { useEffect } from 'react';
@@ -144,6 +145,16 @@ export default function App() {
         if (typeof receivedProjectId === 'string' && receivedProjectId.trim()) {
           console.log('Received projectId from parent:', receivedProjectId);
           setProjectId(receivedProjectId);
+        }
+      }
+
+      // Handle prompt property
+      if (event.data && typeof event.data === 'object' && 'prompt' in event.data) {
+        const receivedPrompt = event.data.prompt;
+
+        if (typeof receivedPrompt === 'string' && receivedPrompt.trim()) {
+          console.log('Received prompt from parent:', receivedPrompt);
+          chatStore.setKey('prompt', receivedPrompt);
         }
       }
     };

@@ -143,7 +143,7 @@ export const ChatImpl = memo(
       const savedProvider = Cookies.get('selectedProvider');
       return (PROVIDER_LIST.find((p) => p.name === savedProvider) || DEFAULT_PROVIDER) as ProviderInfo;
     });
-    const { showChat } = useStore(chatStore);
+    const { showChat, prompt } = useStore(chatStore);
     const [animationScope, animate] = useAnimate();
     const [apiKeys, setApiKeys] = useState<Record<string, string>>({});
     const [chatMode, setChatMode] = useState<'discuss' | 'build'>('build');
@@ -242,6 +242,16 @@ export const ChatImpl = memo(
         storeMessageHistory,
       });
     }, [messages, isLoading, parseMessages]);
+
+    // Handle prompt from parent window
+    useEffect(() => {
+      if (prompt && prompt.trim()) {
+        setInput(prompt);
+
+        // Clear the prompt after setting it
+        chatStore.setKey('prompt', '');
+      }
+    }, [prompt, setInput]);
 
     const scrollTextArea = () => {
       const textarea = textareaRef.current;
