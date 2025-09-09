@@ -78,7 +78,9 @@ export async function getAll(db: IDBDatabase, projectId?: string): Promise<ChatH
     request.onsuccess = () => {
       let results = request.result as ChatHistoryItem[];
 
-      if (projectId) {
+      if (projectId === null || projectId === undefined) {
+        results = [];
+      } else {
         results = results.filter((chat) => chat.projectId === projectId);
       }
 

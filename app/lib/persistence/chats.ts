@@ -41,7 +41,9 @@ export async function getAllChats(db: IDBDatabase, projectId?: string): Promise<
       request.onsuccess = () => {
         let result = request.result || [];
 
-        if (projectId) {
+        if (projectId === null || projectId === undefined) {
+          result = [];
+        } else {
           result = result.filter((chat) => chat.projectId === projectId);
         }
 

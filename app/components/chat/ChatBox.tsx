@@ -1,6 +1,8 @@
 import React from 'react';
 import { ClientOnly } from 'remix-utils/client-only';
 import { classNames } from '~/utils/classNames';
+import { useStore } from '@nanostores/react';
+import { projectStore } from '~/lib/stores/project';
 
 /*
  * import { PROVIDER_LIST } from '~/utils/constants';
@@ -67,6 +69,8 @@ interface ChatBoxProps {
 }
 
 export const ChatBox: React.FC<ChatBoxProps> = (props) => {
+  const projectId = useStore(projectStore);
+
   return (
     <div
       className={classNames(
@@ -105,35 +109,49 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
         <rect className={classNames(styles.PromptEffectLine)} pathLength="100" strokeLinecap="round"></rect>
         <rect className={classNames(styles.PromptShine)} x="48" y="24" width="70" height="1"></rect>
       </svg>
+      {!projectId && (
+        <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-800">
+          <div className="flex items-center">
+            <div className="i-ph:warning-circle text-xl mr-2"></div>
+            <div>
+              <h3 className="font-semibold">Project ID Required</h3>
+              <p className="text-sm">
+                This application requires a project ID to be provided by the parent application. Please ensure the
+                parent app sends the correct project ID.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
       <div>
         {/* <ClientOnly>
-          {() => (
-            <div className={props.isModelSettingsCollapsed ? 'hidden' : ''}>
-              <ModelSelector
-                key={props.provider?.name + ':' + props.modelList.length}
-                model={props.model}
-                setModel={props.setModel}
-                modelList={props.modelList}
-                provider={props.provider}
-                setProvider={props.setProvider}
-                providerList={props.providerList || (PROVIDER_LIST as ProviderInfo[])}
-                apiKeys={props.apiKeys}
-                modelLoading={props.isModelLoading}
-              />
-              {(props.providerList || []).length > 0 &&
-                props.provider &&
-                (!LOCAL_PROVIDERS.includes(props.provider.name) || 'OpenAILike') && (
-                  <APIKeyManager
-                    provider={props.provider}
-                    apiKey={props.apiKeys[props.provider.name] || ''}
-                    setApiKey={(key) => {
-                      props.onApiKeysChange(props.provider.name, key);
-                    }}
-                  />
-                )}
-            </div>
-          )}
-        </ClientOnly> */}
+           {() => (
+             <div className={props.isModelSettingsCollapsed ? 'hidden' : ''}>
+               <ModelSelector
+                 key={props.provider?.name + ':' + props.modelList.length}
+                 model={props.model}
+                 setModel={props.setModel}
+                 modelList={props.modelList}
+                 provider={props.provider}
+                 setProvider={props.setProvider}
+                 providerList={props.providerList || (PROVIDER_LIST as ProviderInfo[])}
+                 apiKeys={props.apiKeys}
+                 modelLoading={props.isModelLoading}
+               />
+               {(props.providerList || []).length > 0 &&
+                 props.provider &&
+                 (!LOCAL_PROVIDERS.includes(props.provider.name) || 'OpenAILike') && (
+                   <APIKeyManager
+                     provider={props.provider}
+                     apiKey={props.apiKeys[props.provider.name] || ''}
+                     setApiKey={(key) => {
+                       props.onApiKeysChange(props.provider.name, key);
+                     }}
+                   />
+                 )}
+             </div>
+           )}
+         </ClientOnly> */}
       </div>
       <FilePreview
         files={props.uploadedFiles}
@@ -249,7 +267,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
             <SendButton
               show={props.input.length > 0 || props.isStreaming || props.uploadedFiles.length > 0}
               isStreaming={props.isStreaming}
-              disabled={!props.providerList || props.providerList.length === 0}
+              disabled={!props.providerList || props.providerList.length === 0 || !projectId}
               onClick={(event) => {
                 if (props.isStreaming) {
                   props.handleStop?.();
