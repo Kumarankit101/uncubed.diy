@@ -20,14 +20,16 @@ export interface Chat {
   updatedAt: string;
   urlId?: string;
   metadata?: IChatMetadata;
+  projectId?: string;
 }
 
 /**
  * Get all chats from the database
  * @param db The IndexedDB database instance
+ * @param projectId Optional project ID to filter chats
  * @returns A promise that resolves to an array of chats
  */
-export async function getAllChats(db: IDBDatabase): Promise<Chat[]> {
+export async function getAllChats(db: IDBDatabase, projectId?: string): Promise<Chat[]> {
   console.log(`getAllChats: Using database '${db.name}', version ${db.version}`);
 
   return new Promise((resolve, reject) => {
@@ -37,8 +39,14 @@ export async function getAllChats(db: IDBDatabase): Promise<Chat[]> {
       const request = store.getAll();
 
       request.onsuccess = () => {
-        const result = request.result || [];
+        let result = request.result || [];
+
+        if (projectId) {
+          result = result.filter((chat) => chat.projectId === projectId);
+        }
+
         console.log(`getAllChats: Found ${result.length} chats in database '${db.name}'`);
+
         resolve(result);
       };
 

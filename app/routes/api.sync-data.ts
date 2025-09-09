@@ -9,6 +9,7 @@ interface ChatPayload {
   timestamp: string;
   updated_at: string;
   metadata?: Record<string, unknown>;
+  project_id?: string;
   is_deleted?: boolean;
 }
 
@@ -18,6 +19,7 @@ interface SnapshotPayload {
   files: Record<string, unknown>;
   summary?: string;
   updated_at: string;
+  project_id?: string;
   is_deleted?: boolean;
 }
 interface SyncRequest {
@@ -53,7 +55,17 @@ export const action: ActionFunction = async ({ request }) => {
       const shouldUpsert = !existing || new Date(chat.updated_at) > new Date(existing.updated_at as string);
 
       if (shouldUpsert) {
-        await supabase.from('chats').upsert(chat);
+        await supabase.from('chats').upsert({
+          id: chat.id,
+          url_id: chat.url_id,
+          description: chat.description,
+          messages: chat.messages,
+          timestamp: chat.timestamp,
+          updated_at: chat.updated_at,
+          metadata: chat.metadata,
+          project_id: chat.project_id,
+          is_deleted: chat.is_deleted,
+        });
       }
     }
 
@@ -68,7 +80,15 @@ export const action: ActionFunction = async ({ request }) => {
       const shouldUpsert = !existing || new Date(snap.updated_at) > new Date(existing.updated_at as string);
 
       if (shouldUpsert) {
-        await supabase.from('snapshots').upsert(snap);
+        await supabase.from('snapshots').upsert({
+          chat_id: snap.chat_id,
+          chat_index: snap.chat_index,
+          files: snap.files,
+          summary: snap.summary,
+          updated_at: snap.updated_at,
+          project_id: snap.project_id,
+          is_deleted: snap.is_deleted,
+        });
       }
     }
 

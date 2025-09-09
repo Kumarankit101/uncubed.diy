@@ -3,6 +3,7 @@ import type { LinksFunction } from '@remix-run/cloudflare';
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/react';
 import tailwindReset from '@unocss/reset/tailwind-compat.css?url';
 import { themeStore } from './lib/stores/theme';
+import { projectStore, setProjectId } from './lib/stores/project';
 import { stripIndents } from './utils/stripIndent';
 import { createHead } from 'remix-island';
 import { useEffect } from 'react';
@@ -116,6 +117,7 @@ import { logStore } from './lib/stores/logs';
 export default function App() {
   const { lastSyncedAt } = useSyncService();
   const theme = useStore(themeStore);
+  const projectId = useStore(projectStore);
 
   useEffect(() => {
     import('./utils/globalFetch');
@@ -127,6 +129,38 @@ export default function App() {
       timestamp: new Date().toISOString(),
     });
   }, []);
+
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      // Only accept messages from the parent window
+      if (event.source !== window.parent) {
+        return;
+      }
+
+      // Validate the message structure
+      if (event.data && typeof event.data === 'object' && 'projectId' in event.data) {
+        const receivedProjectId = event.data.projectId;
+
+        if (typeof receivedProjectId === 'string' && receivedProjectId.trim()) {
+          console.log('Received projectId from parent:', receivedProjectId);
+          setProjectId(receivedProjectId);
+        }
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+
+    return () => {
+      window.removeEventListener('message', handleMessage);
+    };
+  }, []);
+
+  // Log current projectId for debugging
+  useEffect(() => {
+    if (projectId) {
+      console.log('Current projectId:', projectId);
+    }
+  }, [projectId]);
 
   return (
     <Layout>

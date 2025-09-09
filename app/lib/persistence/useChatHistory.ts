@@ -5,6 +5,7 @@ import { generateId, type JSONValue, type Message } from 'ai';
 import { toast } from 'react-toastify';
 import { workbenchStore } from '~/lib/stores/workbench';
 import { logStore } from '~/lib/stores/logs'; // Import logStore
+import { projectStore } from '~/lib/stores/project';
 import {
   getMessages,
   getNextId,
@@ -30,6 +31,7 @@ export interface ChatHistoryItem {
   messages: Message[];
   timestamp: string;
   metadata?: IChatMetadata;
+  projectId?: string;
 }
 
 const persistenceEnabled = !import.meta.env.VITE_DISABLE_PERSISTENCE;
@@ -200,6 +202,7 @@ ${value.content}
   const takeSnapshot = useCallback(
     async (chatIdx: string, files: FileMap, _chatId?: string | undefined, chatSummary?: string) => {
       const id = chatId.get();
+      const currentProjectId = projectStore.get();
 
       if (!id || !db) {
         return;
@@ -209,11 +212,12 @@ ${value.content}
         chatIndex: chatIdx,
         files,
         summary: chatSummary,
+        projectId: currentProjectId || undefined,
       };
 
       // localStorage.setItem(`snapshot:${id}`, JSON.stringify(snapshot)); // Remove localStorage usage
       try {
-        await setSnapshot(db, id, snapshot);
+        await setSnapshot(db, id, snapshot, currentProjectId || undefined);
       } catch (error) {
         console.error('Failed to save snapshot:', error);
         toast.error('Failed to save chat snapshot.');
@@ -324,6 +328,7 @@ ${value.content}
 
       // Ensure chatId.get() is used for the final setMessages call
       const finalChatId = chatId.get();
+      const currentProjectId = projectStore.get();
 
       if (!finalChatId) {
         console.error('Cannot save messages, chat ID is not set.');
@@ -340,6 +345,7 @@ ${value.content}
         description.get(),
         undefined,
         chatMetadata.get(),
+        currentProjectId || undefined,
       );
     },
     duplicateCurrentChat: async (listItemId: string) => {
@@ -362,7 +368,8 @@ ${value.content}
       }
 
       try {
-        const newId = await createChatFromMessages(db, description, messages, metadata);
+        const currentProjectId = projectStore.get();
+        const newId = await createChatFromMessages(db, description, messages, metadata, currentProjectId || undefined);
         window.location.href = `/diy/chat/${newId}`;
         toast.success('Chat imported successfully');
       } catch (error) {

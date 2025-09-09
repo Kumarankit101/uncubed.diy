@@ -1,5 +1,6 @@
 import { motion, type Variants } from 'framer-motion';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useStore } from '@nanostores/react';
 import { toast } from 'react-toastify';
 import { Dialog, DialogButton, DialogDescription, DialogRoot, DialogTitle } from '~/components/ui/Dialog';
 import { ThemeSwitch } from '~/components/ui/ThemeSwitch';
@@ -9,6 +10,7 @@ import { ControlPanel } from '~/components/@settings/core/ControlPanel';
 import { Button } from '~/components/ui/Button';
 import { db, deleteById, getAll, chatId, type ChatHistoryItem, useChatHistory } from '~/lib/persistence';
 import { getMessages, getSnapshot } from '~/lib/persistence/db';
+import { projectStore } from '~/lib/stores/project';
 import { cubicEasingFn } from '~/utils/easings';
 import { HistoryItem } from './HistoryItem';
 import { binDates } from './date-binning';
@@ -87,6 +89,7 @@ export const Menu = () => {
   // const profile = useStore(profileStore);
   const [selectionMode, setSelectionMode] = useState(false);
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  const currentProjectId = useStore(projectStore);
 
   const { filteredItems: filteredList, handleSearchChange } = useSearchFilter({
     items: list,
@@ -95,12 +98,12 @@ export const Menu = () => {
 
   const loadEntries = useCallback(() => {
     if (db) {
-      getAll(db)
+      getAll(db, currentProjectId || undefined)
         .then((list) => list.filter((item) => item.urlId && item.description))
         .then(setList)
         .catch((error) => toast.error(error.message));
     }
-  }, []);
+  }, [currentProjectId]);
 
   const deleteChat = useCallback(
     async (id: string): Promise<void> => {

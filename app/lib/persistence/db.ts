@@ -19,7 +19,7 @@ export async function openDatabase(): Promise<IDBDatabase | undefined> {
   }
 
   return new Promise((resolve) => {
-    const request = indexedDB.open('uncubedHistory', 3);
+    const request = indexedDB.open('uncubedHistory', 4);
 
     request.onupgradeneeded = (event: IDBVersionChangeEvent) => {
       const db = (event.target as IDBOpenDBRequest).result;
@@ -47,6 +47,15 @@ export async function openDatabase(): Promise<IDBDatabase | undefined> {
         const snapshotStore = txn.objectStore('snapshots');
         snapshotStore.createIndex('updatedAt', 'updatedAt', {});
       }
+
+      if (oldVersion < 4) {
+        const txn = (event.target as IDBOpenDBRequest).transaction!;
+        const chatStore = txn.objectStore('chats');
+        chatStore.createIndex('projectId', 'projectId', {});
+
+        const snapshotStore = txn.objectStore('snapshots');
+        snapshotStore.createIndex('projectId', 'projectId', {});
+      }
     };
 
     request.onsuccess = (event: Event) => {
@@ -60,13 +69,22 @@ export async function openDatabase(): Promise<IDBDatabase | undefined> {
   });
 }
 
-export async function getAll(db: IDBDatabase): Promise<ChatHistoryItem[]> {
+export async function getAll(db: IDBDatabase, projectId?: string): Promise<ChatHistoryItem[]> {
   return new Promise((resolve, reject) => {
     const transaction = db.transaction('chats', 'readonly');
     const store = transaction.objectStore('chats');
     const request = store.getAll();
 
-    request.onsuccess = () => resolve(request.result as ChatHistoryItem[]);
+    request.onsuccess = () => {
+      let results = request.result as ChatHistoryItem[];
+
+      if (projectId) {
+        results = results.filter((chat) => chat.projectId === projectId);
+      }
+
+      resolve(results);
+    };
+
     request.onerror = () => reject(request.error);
   });
 }
@@ -79,6 +97,7 @@ export async function setMessages(
   description?: string,
   timestamp?: string,
   metadata?: IChatMetadata,
+  projectId?: string,
 ): Promise<void> {
   return new Promise((resolve, reject) => {
     const transaction = db.transaction('chats', 'readwrite');
@@ -97,6 +116,7 @@ export async function setMessages(
       timestamp: timestamp ?? new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       metadata,
+      projectId,
     });
 
     request.onsuccess = () => resolve();
@@ -259,7 +279,13 @@ export async function duplicateChat(db: IDBDatabase, id: string): Promise<string
     throw new Error('Chat not found');
   }
 
-  return createChatFromMessages(db, `${chat.description || 'Chat'} (copy)`, chat.messages);
+  return createChatFromMessages(
+    db,
+    `${chat.description || 'Chat'} (copy)`,
+    chat.messages,
+    chat.metadata,
+    chat.projectId,
+  );
 }
 
 export async function createChatFromMessages(
@@ -267,6 +293,7 @@ export async function createChatFromMessages(
   description: string,
   messages: Message[],
   metadata?: IChatMetadata,
+  projectId?: string,
 ): Promise<string> {
   const newId = await getNextId(db);
   const newUrlId = await getUrlId(db, newId); // Get a new urlId for the duplicated chat
@@ -279,6 +306,7 @@ export async function createChatFromMessages(
     description,
     undefined, // Use the current timestamp
     metadata,
+    projectId,
   );
 
   return newUrlId; // Return the urlId instead of id for navigation
@@ -318,16 +346,32 @@ export async function getSnapshot(db: IDBDatabase, chatId: string): Promise<Snap
     const store = transaction.objectStore('snapshots');
     const request = store.get(chatId);
 
-    request.onsuccess = () => resolve(request.result?.snapshot as Snapshot | undefined);
+    request.onsuccess = () => {
+      const result = request.result;
+
+      if (result) {
+        const snapshot = result.snapshot as Snapshot;
+        snapshot.projectId = result.projectId;
+        resolve(snapshot);
+      } else {
+        resolve(undefined);
+      }
+    };
+
     request.onerror = () => reject(request.error);
   });
 }
 
-export async function setSnapshot(db: IDBDatabase, chatId: string, snapshot: Snapshot): Promise<void> {
+export async function setSnapshot(
+  db: IDBDatabase,
+  chatId: string,
+  snapshot: Snapshot,
+  projectId?: string,
+): Promise<void> {
   return new Promise((resolve, reject) => {
     const transaction = db.transaction('snapshots', 'readwrite');
     const store = transaction.objectStore('snapshots');
-    const request = store.put({ chatId, snapshot, updatedAt: new Date().toISOString() });
+    const request = store.put({ chatId, snapshot, updatedAt: new Date().toISOString(), projectId });
 
     request.onsuccess = () => resolve();
     request.onerror = () => reject(request.error);

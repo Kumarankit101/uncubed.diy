@@ -11,6 +11,7 @@ interface ChatPayload {
   timestamp: string;
   updated_at: string;
   metadata?: IChatMetadata;
+  project_id?: string;
   is_deleted?: boolean;
 }
 
@@ -20,6 +21,7 @@ interface SnapshotPayload {
   files: Record<string, unknown>;
   summary?: string;
   updated_at: string;
+  project_id?: string;
   is_deleted?: boolean;
 }
 
@@ -68,6 +70,7 @@ export function useSyncService() {
       timestamp: c.timestamp,
       updated_at: (c as any).updatedAt,
       metadata: c.metadata,
+      project_id: c.projectId,
       is_deleted: false,
     }));
 
@@ -75,16 +78,18 @@ export function useSyncService() {
     const tx = db.transaction('snapshots', 'readonly');
     const store = tx.objectStore('snapshots');
     const getAllReq = store.getAll();
-    const rawSnaps: Array<{ chatId: string; snapshot: Snapshot; updatedAt: string }> = await new Promise((res, rej) => {
-      getAllReq.onsuccess = () => res(getAllReq.result as any);
-      getAllReq.onerror = () => rej(getAllReq.error);
-    });
+    const rawSnaps: Array<{ chatId: string; snapshot: Snapshot; updatedAt: string; projectId?: string }> =
+      await new Promise((res, rej) => {
+        getAllReq.onsuccess = () => res(getAllReq.result as any);
+        getAllReq.onerror = () => rej(getAllReq.error);
+      });
     const snapshotPayloads: SnapshotPayload[] = rawSnaps.map((s) => ({
       chat_id: s.chatId,
       chat_index: s.snapshot.chatIndex,
       files: s.snapshot.files,
       summary: s.snapshot.summary,
       updated_at: s.updatedAt,
+      project_id: s.projectId,
       is_deleted: false,
     }));
 
@@ -174,6 +179,7 @@ export function useSyncService() {
                 timestamp: chat.timestamp,
                 updatedAt: newTs,
                 metadata: chat.metadata,
+                projectId: chat.project_id,
               });
             });
 
@@ -196,8 +202,10 @@ export function useSyncService() {
                   chatIndex: snap.chat_index,
                   files: snap.files,
                   summary: snap.summary,
+                  projectId: snap.project_id,
                 },
                 updatedAt: newTs,
+                projectId: snap.project_id,
               });
             });
         };
