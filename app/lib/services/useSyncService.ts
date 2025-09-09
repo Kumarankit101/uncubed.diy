@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { openDatabase, getAll as getAllChats, type IChatMetadata } from '~/lib/persistence/db';
 import type { ChatHistoryItem } from '~/lib/persistence/useChatHistory';
 import type { Snapshot } from '~/lib/persistence/types';
+import { projectStore } from '~/lib/stores/project';
 
 interface ChatPayload {
   id: string;
@@ -61,7 +62,8 @@ export function useSyncService() {
     }
 
     // Gather chats
-    const chats: ChatHistoryItem[] = await getAllChats(db);
+    const currentProjectId = projectStore.get() ?? undefined;
+    const chats: ChatHistoryItem[] = await getAllChats(db, currentProjectId);
     const chatPayloads: ChatPayload[] = chats.map((c) => ({
       id: c.id,
       url_id: c.urlId,
