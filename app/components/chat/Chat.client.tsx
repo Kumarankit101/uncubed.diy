@@ -16,7 +16,7 @@ import Cookies from 'js-cookie';
 import { debounce } from '~/utils/debounce';
 import { useSettings } from '~/lib/hooks/useSettings';
 import type { ProviderInfo } from '~/types/model';
-import { useSearchParams } from '@remix-run/react';
+import { useLocation, useSearchParams } from '@remix-run/react';
 import { createSampler } from '~/utils/sampler';
 import { getTemplates, selectStarterTemplate } from '~/utils/selectStarterTemplate';
 import { logStore } from '~/lib/stores/logs';
@@ -123,6 +123,7 @@ export const ChatImpl = memo(
     const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
     const [imageDataList, setImageDataList] = useState<string[]>([]);
     const [searchParams, setSearchParams] = useSearchParams();
+    const location = useLocation();
     const [fakeLoading, setFakeLoading] = useState(false);
     const files = useStore(workbenchStore.files);
     const [designScheme, setDesignScheme] = useState<DesignScheme>(defaultDesignScheme);
@@ -214,7 +215,7 @@ export const ChatImpl = memo(
 
       // console.log(prompt, searchParams, model, provider);
 
-      if (prompt) {
+      if (prompt && location.pathname === '/') {
         setSearchParams({});
         runAnimation();
         append({
@@ -222,7 +223,7 @@ export const ChatImpl = memo(
           content: `[Model: ${model}]\n\n[Provider: ${provider.name}]\n\n${prompt}`,
         });
       }
-    }, [model, provider, searchParams]);
+    }, [model, provider, searchParams, location.pathname]);
 
     const { enhancingPrompt, promptEnhanced, enhancePrompt, resetEnhancer } = usePromptEnhancer();
     const { parsedMessages, parseMessages } = useMessageParser();
@@ -245,13 +246,13 @@ export const ChatImpl = memo(
 
     // Handle prompt from parent window
     useEffect(() => {
-      if (prompt && prompt.trim()) {
+      if (prompt && prompt.trim() && location.pathname === '/') {
         setInput(prompt);
 
         // Clear the prompt after setting it
         chatStore.setKey('prompt', '');
       }
-    }, [prompt, setInput]);
+    }, [prompt, setInput, location.pathname]);
 
     const scrollTextArea = () => {
       const textarea = textareaRef.current;
