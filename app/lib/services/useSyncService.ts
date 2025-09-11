@@ -19,7 +19,9 @@ interface ChatPayload {
 interface SnapshotPayload {
   chat_id: string;
   chat_index: string;
-  files: Record<string, unknown>;
+  files?: Record<string, unknown>; // Temporary: for sending files to server during transition
+  file_references?: Record<string, string>;
+  storage_bucket?: string;
   summary?: string;
   updated_at: string;
   project_id?: string;
@@ -88,7 +90,9 @@ export function useSyncService() {
     const snapshotPayloads: SnapshotPayload[] = rawSnaps.map((s) => ({
       chat_id: s.chatId,
       chat_index: s.snapshot.chatIndex,
-      files: s.snapshot.files,
+      files: s.snapshot.files, // Temporary: send files to server for upload
+      file_references: s.snapshot.file_references,
+      storage_bucket: s.snapshot.storage_bucket,
       summary: s.snapshot.summary,
       updated_at: s.updatedAt,
       project_id: s.projectId,
@@ -202,7 +206,8 @@ export function useSyncService() {
                 chatId: snap.chat_id,
                 snapshot: {
                   chatIndex: snap.chat_index,
-                  files: snap.files,
+                  file_references: snap.file_references,
+                  storage_bucket: snap.storage_bucket,
                   summary: snap.summary,
                   projectId: snap.project_id,
                 },

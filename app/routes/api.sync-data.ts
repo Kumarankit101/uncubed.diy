@@ -1,5 +1,7 @@
 import { json, type ActionFunction } from '@remix-run/cloudflare';
 import { createClient } from '@supabase/supabase-js';
+import { uploadSnapshotFiles } from '~/lib/services/storageService';
+import type { FileMap } from '~/lib/stores/files';
 
 interface ChatPayload {
   id: string;
@@ -16,7 +18,9 @@ interface ChatPayload {
 interface SnapshotPayload {
   chat_id: string;
   chat_index: string;
-  files: Record<string, unknown>;
+  files?: FileMap; // Temporary: for receiving files from client during transition
+  file_references?: Record<string, string>;
+  storage_bucket?: string;
   summary?: string;
   updated_at: string;
   project_id?: string;
@@ -80,10 +84,27 @@ export const action: ActionFunction = async ({ request }) => {
       const shouldUpsert = !existing || new Date(snap.updated_at) > new Date(existing.updated_at as string);
 
       if (shouldUpsert) {
+        let fileReferences = snap.file_references || {};
+        let storageBucket = snap.storage_bucket || 'snapshot-files';
+
+        // If snapshot has files, upload only changed files to storage
+        if (snap.files && Object.keys(snap.files).length > 0) {
+          try {
+            const uploadResult = await uploadSnapshotFiles(snap.files, snap.chat_id, snap.file_references);
+            fileReferences = uploadResult.fileReferences;
+            storageBucket = uploadResult.storageBucket;
+          } catch (error) {
+            console.error(`Failed to upload files for snapshot ${snap.chat_id}:`, error);
+
+            // Continue with sync but log error - don't fail the entire sync
+          }
+        }
+
         await supabase.from('snapshots').upsert({
           chat_id: snap.chat_id,
           chat_index: snap.chat_index,
-          files: snap.files,
+          file_references: fileReferences,
+          storage_bucket: storageBucket,
           summary: snap.summary,
           updated_at: snap.updated_at,
           project_id: snap.project_id,

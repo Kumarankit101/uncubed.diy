@@ -116,8 +116,8 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
             <div>
               <h3 className="font-semibold">Project ID Required</h3>
               <p className="text-sm">
-                This application requires a project ID to be provided by the parent application. Please ensure the
-                parent app sends the correct project ID.
+                This application requires a project ID to be provided by the parent application.Please try reloading the
+                page.
               </p>
             </div>
           </div>

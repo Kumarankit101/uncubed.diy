@@ -75,7 +75,7 @@ export function useChatHistory() {
              * const snapshotStr = localStorage.getItem(`snapshot:${mixedId}`); // Remove localStorage usage
              * const snapshot: Snapshot = snapshotStr ? JSON.parse(snapshotStr) : { chatIndex: 0, files: {} }; // Use snapshot from DB
              */
-            const validSnapshot = snapshot || { chatIndex: '', files: {} }; // Ensure snapshot is not undefined
+            const validSnapshot = snapshot || { chatIndex: '', file_references: {} }; // Ensure snapshot is not undefined
             const summary = validSnapshot.summary;
 
             const rewindId = searchParams.get('rewindTo');
@@ -103,18 +103,11 @@ export function useChatHistory() {
             setArchivedMessages(archivedMessages);
 
             if (startingIdx > 0) {
-              const files = Object.entries(validSnapshot?.files || {})
-                .map(([key, value]) => {
-                  if (value?.type !== 'file') {
-                    return null;
-                  }
-
-                  return {
-                    content: value.content,
-                    path: key,
-                  };
-                })
-                .filter((x): x is { content: string; path: string } => !!x); // Type assertion
+              /*
+               * For now, skip project command detection since files are in storage
+               * TODO: Implement fetching files from storage for command detection
+               */
+              const files: Array<{ content: string; path: string }> = [];
               const projectCommands = await detectProjectCommands(files);
 
               // Call the modified function to get only the command actions string
@@ -131,25 +124,12 @@ export function useChatHistory() {
                   id: storedMessages.messages[snapshotIndex].id,
                   role: 'assistant',
 
-                  // Combine followup message and the artifact with files and command actions
-                  content: `Uncubed Restored your chat from a snapshot. You can revert this message to load the full chat history.
-                  <uncubedArtifact id="restored-project-setup" title="Restored Project & Setup" type="bundled">
-                  ${Object.entries(snapshot?.files || {})
-                    .map(([key, value]) => {
-                      if (value?.type === 'file') {
-                        return `
-                      <uncubedAction type="file" filePath="${key}">
-${value.content}
-                      </uncubedAction>
-                      `;
-                      } else {
-                        return ``;
-                      }
-                    })
-                    .join('\n')}
-                  ${commandActionsString} 
-                  </uncubedArtifact>
-                  `, // Added commandActionsString, followupMessage, updated id and title
+                  // Combine followup message and the artifact with file references
+                  content: `Uncubed Restored your chat from a snapshot. Files will be loaded from storage.
+                   <uncubedArtifact id="restored-project-setup" title="Restored Project & Setup" type="bundled">
+                   ${commandActionsString}
+                   </uncubedArtifact>
+                   `, // Files will be loaded from storage using references
                   annotations: [
                     'no-store',
                     ...(summary
@@ -208,9 +188,13 @@ ${value.content}
         return;
       }
 
+      // Get only modified files to optimize snapshot size
+      const modifiedFiles = workbenchStore.getModifiedFiles();
+      const snapshotFiles = modifiedFiles || files; // Fallback to all files if no modified files tracked
+
       const snapshot: Snapshot = {
         chatIndex: chatIdx,
-        files,
+        files: snapshotFiles, // Use only modified files for efficiency
         summary: chatSummary,
         projectId: currentProjectId || undefined,
       };
@@ -227,36 +211,61 @@ ${value.content}
   );
 
   const restoreSnapshot = useCallback(async (id: string, snapshot?: Snapshot) => {
-    // const snapshotStr = localStorage.getItem(`snapshot:${id}`); // Remove localStorage usage
     const container = await webcontainer;
 
-    const validSnapshot = snapshot || { chatIndex: '', files: {} };
+    const validSnapshot = snapshot || { chatIndex: '', file_references: {} };
 
-    if (!validSnapshot?.files) {
-      return;
+    // If we have file references, fetch files from storage via API
+    if (validSnapshot?.file_references && Object.keys(validSnapshot.file_references).length > 0) {
+      for (const [filePath, storageKey] of Object.entries(validSnapshot.file_references)) {
+        try {
+          const response = await fetch(`/api/snapshot-files/${encodeURIComponent(storageKey as string)}`);
+
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+
+          const fileContent = await response.text();
+
+          // Write file to webcontainer
+          let normalizedPath = filePath;
+
+          if (normalizedPath.startsWith(container.workdir)) {
+            normalizedPath = normalizedPath.replace(container.workdir, '');
+          }
+
+          await container.fs.writeFile(normalizedPath, fileContent, { encoding: 'utf8' });
+        } catch (error) {
+          console.error(`Failed to download file ${filePath} from storage:`, error);
+
+          // Continue with other files
+        }
+      }
     }
 
-    Object.entries(validSnapshot.files).forEach(async ([key, value]) => {
-      if (key.startsWith(container.workdir)) {
-        key = key.replace(container.workdir, '');
-      }
-
-      if (value?.type === 'folder') {
-        await container.fs.mkdir(key, { recursive: true });
-      }
-    });
-    Object.entries(validSnapshot.files).forEach(async ([key, value]) => {
-      if (value?.type === 'file') {
+    // If we still have legacy files field, use it for backward compatibility
+    if (validSnapshot?.files) {
+      Object.entries(validSnapshot.files).forEach(async ([key, value]) => {
         if (key.startsWith(container.workdir)) {
           key = key.replace(container.workdir, '');
         }
 
-        await container.fs.writeFile(key, value.content, { encoding: value.isBinary ? undefined : 'utf8' });
-      } else {
-      }
-    });
+        if (value?.type === 'folder') {
+          await container.fs.mkdir(key, { recursive: true });
+        }
+      });
+      Object.entries(validSnapshot.files).forEach(async ([key, value]) => {
+        if (value?.type === 'file') {
+          if (key.startsWith(container.workdir)) {
+            key = key.replace(container.workdir, '');
+          }
 
-    // workbenchStore.files.setKey(snapshot?.files)
+          await container.fs.writeFile(key, value.content, { encoding: value.isBinary ? undefined : 'utf8' });
+        }
+      });
+
+      // workbenchStore.files.setKey(snapshot?.files)
+    }
   }, []);
 
   return {
