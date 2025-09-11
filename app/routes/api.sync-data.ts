@@ -32,6 +32,7 @@ interface SyncRequest {
   lastSyncedAt?: string;
   localChatIds?: string[];
   localSnapshotIds?: string[];
+  projectId?: string;
 }
 
 const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
@@ -49,7 +50,8 @@ export const action: ActionFunction = async ({ request }) => {
   }
 
   try {
-    const { chats, snapshots, lastSyncedAt, localChatIds, localSnapshotIds } = (await request.json()) as SyncRequest;
+    const { chats, snapshots, lastSyncedAt, localChatIds, localSnapshotIds, projectId } =
+      (await request.json()) as SyncRequest;
 
     // Sync chats
     for (const chat of chats) {
@@ -117,48 +119,64 @@ export const action: ActionFunction = async ({ request }) => {
 
     let newChats: ChatPayload[] = [];
 
-    if (lastSyncedAt) {
-      const { data } = await supabase.from('chats').select('*').gt('updated_at', lastSyncedAt).eq('is_deleted', false);
-      newChats = data ?? [];
-    } else {
-      const { data } = await supabase.from('chats').select('*').eq('is_deleted', false);
-      newChats = data ?? [];
-    }
+    if (projectId) {
+      if (lastSyncedAt) {
+        const { data } = await supabase
+          .from('chats')
+          .select('*')
+          .gt('updated_at', lastSyncedAt)
+          .eq('is_deleted', false)
+          .eq('project_id', projectId);
+        newChats = data ?? [];
+      } else {
+        const { data } = await supabase.from('chats').select('*').eq('is_deleted', false).eq('project_id', projectId);
+        newChats = data ?? [];
+      }
 
-    // Include any chats missing locally
-    if (localChatIds && localChatIds.length > 0) {
-      const notIn = localChatIds.map((id) => `'${id}'`).join(',');
-      const { data: missing } = await supabase
-        .from('chats')
-        .select('*')
-        .not('id', 'in', `(${notIn})`)
-        .eq('is_deleted', false);
-      newChats = [...newChats, ...(missing ?? [])];
+      // Include any chats missing locally
+      if (localChatIds && localChatIds.length > 0) {
+        const notIn = localChatIds.map((id) => `'${id}'`).join(',');
+        const { data: missing } = await supabase
+          .from('chats')
+          .select('*')
+          .not('id', 'in', `(${notIn})`)
+          .eq('is_deleted', false)
+          .eq('project_id', projectId);
+        newChats = [...newChats, ...(missing ?? [])];
+      }
     }
 
     let newSnapshots: SnapshotPayload[] = [];
 
-    if (lastSyncedAt) {
-      const { data } = await supabase
-        .from('snapshots')
-        .select('*')
-        .gt('updated_at', lastSyncedAt)
-        .eq('is_deleted', false);
-      newSnapshots = data ?? [];
-    } else {
-      const { data } = await supabase.from('snapshots').select('*').eq('is_deleted', false);
-      newSnapshots = data ?? [];
-    }
+    if (projectId) {
+      if (lastSyncedAt) {
+        const { data } = await supabase
+          .from('snapshots')
+          .select('*')
+          .gt('updated_at', lastSyncedAt)
+          .eq('is_deleted', false)
+          .eq('project_id', projectId);
+        newSnapshots = data ?? [];
+      } else {
+        const { data } = await supabase
+          .from('snapshots')
+          .select('*')
+          .eq('is_deleted', false)
+          .eq('project_id', projectId);
+        newSnapshots = data ?? [];
+      }
 
-    // Include any snapshots missing locally
-    if (localSnapshotIds && localSnapshotIds.length > 0) {
-      const notInIds = localSnapshotIds.map((id) => `'${id}'`).join(',');
-      const { data: missingSnaps } = await supabase
-        .from('snapshots')
-        .select('*')
-        .not('chat_id', 'in', `(${notInIds})`)
-        .eq('is_deleted', false);
-      newSnapshots = [...newSnapshots, ...(missingSnaps ?? [])];
+      // Include any snapshots missing locally
+      if (localSnapshotIds && localSnapshotIds.length > 0) {
+        const notInIds = localSnapshotIds.map((id) => `'${id}'`).join(',');
+        const { data: missingSnaps } = await supabase
+          .from('snapshots')
+          .select('*')
+          .not('chat_id', 'in', `(${notInIds})`)
+          .eq('is_deleted', false)
+          .eq('project_id', projectId);
+        newSnapshots = [...newSnapshots, ...(missingSnaps ?? [])];
+      }
     }
 
     return json<SyncResponse>({ success: true, serverTimestamp, newChats, newSnapshots }, { status: 200 });

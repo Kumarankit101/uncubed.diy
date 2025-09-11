@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { openDatabase, getAll as getAllChats, type IChatMetadata } from '~/lib/persistence/db';
 import type { ChatHistoryItem } from '~/lib/persistence/useChatHistory';
 import type { Snapshot } from '~/lib/persistence/types';
@@ -37,6 +37,7 @@ interface SyncResponse {
 
 export function useSyncService() {
   const [lastSyncedAt, setLastSyncedAt] = useState<string | null>(null);
+  const lastProjectIdRef = useRef<string | null>(null);
 
   const sync = useCallback(async () => {
     // Read and validate last sync timestamp from localStorage
@@ -124,6 +125,7 @@ export function useSyncService() {
           lastSyncedAt: effectiveLast,
           localChatIds: chatPayloads.map((c) => c.id),
           localSnapshotIds: rawSnaps.map((s) => s.chatId),
+          projectId: currentProjectId,
         }),
       });
       const result = (await response.json()) as SyncResponse;
@@ -223,6 +225,29 @@ export function useSyncService() {
       // will retry on next interval
     }
   }, []);
+
+  // Watch for projectId changes and trigger sync
+  useEffect(() => {
+    // Set initial projectId
+    lastProjectIdRef.current = projectStore.get();
+
+    const unsubscribe = projectStore.subscribe((projectId) => {
+      const previousProjectId = lastProjectIdRef.current;
+
+      if (projectId !== previousProjectId) {
+        console.log('ProjectId changed from', previousProjectId, 'to', projectId, '- triggering immediate sync');
+
+        lastProjectIdRef.current = projectId;
+
+        // Sync if we have a projectId, or if projectId changed from a value to null/undefined
+        if (projectId || (previousProjectId && !projectId)) {
+          sync();
+        }
+      }
+    });
+
+    return unsubscribe;
+  }, [sync]);
 
   useEffect(() => {
     sync();
