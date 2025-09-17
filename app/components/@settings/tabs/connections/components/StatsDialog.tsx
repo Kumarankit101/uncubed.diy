@@ -29,7 +29,7 @@ export function StatsDialog({ isOpen, onClose, onConfirm, stats, isLargeRepo }: 
             <Dialog.Content className="bg-white dark:bg-uncubed-elements-background-depth-1 rounded-lg border border-uncubed-elements-borderColor dark:border-uncubed-elements-borderColor-dark shadow-xl">
               <div className="p-6 space-y-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-uncubed-elements-background-depth-3 flex items-center justify-center text-purple-500">
+                  <div className="w-10 h-10 rounded-xl bg-uncubed-elements-background-depth-3 flex items-center justify-center text-orange-500">
                     <span className="i-ph:git-branch w-5 h-5" />
                   </div>
                   <div>
@@ -67,7 +67,7 @@ export function StatsDialog({ isOpen, onClose, onConfirm, stats, isLargeRepo }: 
                 </motion.button>
                 <motion.button
                   onClick={onConfirm}
-                  className="px-4 py-2 rounded-lg bg-purple-500 text-white hover:bg-purple-600 transition-colors"
+                  className="px-4 py-2 rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition-colors"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >

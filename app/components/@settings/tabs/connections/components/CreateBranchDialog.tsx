@@ -64,7 +64,7 @@ export function CreateBranchDialog({ isOpen, onClose, onConfirm, repository, bra
                     'bg-[#F5F5F5] dark:bg-[#1A1A1A]',
                     'border border-[#E5E5E5] dark:border-[#1A1A1A]',
                     'text-uncubed-elements-textPrimary placeholder:text-uncubed-elements-textTertiary',
-                    'focus:outline-none focus:ring-2 focus:ring-purple-500/50',
+                    'focus:outline-none focus:ring-2 focus:ring-orange-500/50',
                   )}
                   required
                 />
@@ -86,7 +86,7 @@ export function CreateBranchDialog({ isOpen, onClose, onConfirm, repository, bra
                     'bg-[#F5F5F5] dark:bg-[#1A1A1A]',
                     'border border-[#E5E5E5] dark:border-[#1A1A1A]',
                     'text-uncubed-elements-textPrimary',
-                    'focus:outline-none focus:ring-2 focus:ring-purple-500/50',
+                    'focus:outline-none focus:ring-2 focus:ring-orange-500/50',
                   )}
                 >
                   {branches?.map((branch) => (
@@ -126,8 +126,8 @@ export function CreateBranchDialog({ isOpen, onClose, onConfirm, repository, bra
                   'px-4 py-2 rounded-lg text-sm font-medium',
                   'text-uncubed-elements-textPrimary',
                   'bg-[#F5F5F5] dark:bg-[#1A1A1A]',
-                  'hover:bg-purple-500/10 hover:text-purple-500',
-                  'dark:hover:bg-purple-500/20 dark:hover:text-purple-500',
+                  'hover:bg-orange-500/10 hover:text-orange-500',
+                  'dark:hover:bg-orange-500/20 dark:hover:text-orange-500',
                   'transition-colors',
                 )}
               >
@@ -137,8 +137,8 @@ export function CreateBranchDialog({ isOpen, onClose, onConfirm, repository, bra
                 type="submit"
                 className={classNames(
                   'px-4 py-2 rounded-lg text-sm font-medium',
-                  'text-white bg-purple-500',
-                  'hover:bg-purple-600',
+                  'text-white bg-orange-500',
+                  'hover:bg-orange-600',
                   'transition-colors',
                 )}
               >

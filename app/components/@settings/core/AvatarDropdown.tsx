@@ -6,7 +6,7 @@ import { profileStore } from '~/lib/stores/profile';
 import type { TabType, Profile } from './types';
 
 const BetaLabel = () => (
-  <span className="px-1.5 py-0.5 rounded-full bg-purple-500/10 dark:bg-purple-500/20 text-[10px] font-medium text-purple-600 dark:text-purple-400 ml-2">
+  <span className="px-1.5 py-0.5 rounded-full bg-orange-500/10 dark:bg-orange-500/20 text-[10px] font-medium text-orange-600 dark:text-orange-400 ml-2">
     BETA
   </span>
 );
@@ -88,15 +88,15 @@ export const AvatarDropdown = ({ onSelectTab }: AvatarDropdownProps) => {
             className={classNames(
               'flex items-center gap-2 px-4 py-2.5',
               'text-sm text-gray-700 dark:text-gray-200',
-              'hover:bg-purple-50 dark:hover:bg-purple-500/10',
-              'hover:text-purple-500 dark:hover:text-purple-400',
+              'hover:bg-orange-50 dark:hover:bg-orange-500/10',
+              'hover:text-orange-500 dark:hover:text-orange-400',
               'cursor-pointer transition-all duration-200',
               'outline-none',
               'group',
             )}
             onClick={() => onSelectTab('profile')}
           >
-            <div className="i-ph:user-circle w-4 h-4 text-gray-400 group-hover:text-purple-500 dark:group-hover:text-purple-400 transition-colors" />
+            <div className="i-ph:user-circle w-4 h-4 text-gray-400 group-hover:text-orange-500 dark:group-hover:text-orange-400 transition-colors" />
             Edit Profile
           </DropdownMenu.Item>
 
@@ -104,15 +104,15 @@ export const AvatarDropdown = ({ onSelectTab }: AvatarDropdownProps) => {
             className={classNames(
               'flex items-center gap-2 px-4 py-2.5',
               'text-sm text-gray-700 dark:text-gray-200',
-              'hover:bg-purple-50 dark:hover:bg-purple-500/10',
-              'hover:text-purple-500 dark:hover:text-purple-400',
+              'hover:bg-orange-50 dark:hover:bg-orange-500/10',
+              'hover:text-orange-500 dark:hover:text-orange-400',
               'cursor-pointer transition-all duration-200',
               'outline-none',
               'group',
             )}
             onClick={() => onSelectTab('settings')}
           >
-            <div className="i-ph:gear-six w-4 h-4 text-gray-400 group-hover:text-purple-500 dark:group-hover:text-purple-400 transition-colors" />
+            <div className="i-ph:gear-six w-4 h-4 text-gray-400 group-hover:text-orange-500 dark:group-hover:text-orange-400 transition-colors" />
             Settings
           </DropdownMenu.Item>
 
@@ -121,15 +121,15 @@ export const AvatarDropdown = ({ onSelectTab }: AvatarDropdownProps) => {
             className={classNames(
               'flex items-center gap-2 px-4 py-2.5',
               'text-sm text-gray-700 dark:text-gray-200',
-              'hover:bg-purple-50 dark:hover:bg-purple-500/10',
-              'hover:text-purple-500 dark:hover:text-purple-400',
+              'hover:bg-orange-50 dark:hover:bg-orange-500/10',
+              'hover:text-orange-500 dark:hover:text-orange-400',
               'cursor-pointer transition-all duration-200',
               'outline-none',
               'group',
             )}
             onClick={() => onSelectTab('service-status')}
           >
-            <div className="i-ph:heartbeat w-4 h-4 text-gray-400 group-hover:text-purple-500 dark:group-hover:text-purple-400 transition-colors" />
+            <div className="i-ph:heartbeat w-4 h-4 text-gray-400 group-hover:text-orange-500 dark:group-hover:text-orange-400 transition-colors" />
             Service Status
             <BetaLabel />
           </DropdownMenu.Item>
@@ -138,8 +138,8 @@ export const AvatarDropdown = ({ onSelectTab }: AvatarDropdownProps) => {
             className={classNames(
               'flex items-center gap-2 px-4 py-2.5',
               'text-sm text-gray-700 dark:text-gray-200',
-              'hover:bg-purple-50 dark:hover:bg-purple-500/10',
-              'hover:text-purple-500 dark:hover:text-purple-400',
+              'hover:bg-orange-50 dark:hover:bg-orange-500/10',
+              'hover:text-orange-500 dark:hover:text-orange-400',
               'cursor-pointer transition-all duration-200',
               'outline-none',
               'group',
@@ -148,7 +148,7 @@ export const AvatarDropdown = ({ onSelectTab }: AvatarDropdownProps) => {
               window.open('https://github.com/stackblitz-labs/uncubed.diy/issues/new?template=bug_report.yml', '_blank')
             }
           >
-            <div className="i-ph:bug w-4 h-4 text-gray-400 group-hover:text-purple-500 dark:group-hover:text-purple-400 transition-colors" />
+            <div className="i-ph:bug w-4 h-4 text-gray-400 group-hover:text-orange-500 dark:group-hover:text-orange-400 transition-colors" />
             Report Bug
           </DropdownMenu.Item>
         </DropdownMenu.Content>

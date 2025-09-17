@@ -206,7 +206,7 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
                 style={{
                   ...(f.key === 'gradient' && {
                     background: isSelected
-                      ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+                      ? 'linear-gradient(135deg, #FB923C 0%, #F97316 100%)'
                       : 'var(--uncubed-elements-bg-depth-3)',
                     color: isSelected ? 'white' : 'var(--uncubed-elements-textSecondary)',
                   }),
@@ -229,7 +229,7 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
                       />
                     )}
                     {f.key === 'gradient' && (
-                      <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-purple-400 via-pink-400 to-indigo-400 opacity-90" />
+                      <div className="w-6 h-6 rounded-lg bg-gradient-to-r from-red-400 via-orange-500 to-yellow-500 opacity-90" />
                     )}
                     {f.key === 'shadow' && (
                       <div className="relative">
