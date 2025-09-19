@@ -19,6 +19,32 @@ import xtermStyles from '@xterm/xterm/css/xterm.css?url';
 import 'virtual:uno.css';
 import { useSyncService } from '~/lib/services/useSyncService';
 
+function setTheme(newTheme: 'light' | 'dark') {
+  // Update the theme store
+  themeStore.set(newTheme);
+
+  // Update localStorage
+  localStorage.setItem('uncubed_theme', newTheme);
+
+  // Update the HTML attribute
+  document.querySelector('html')?.setAttribute('data-theme', newTheme);
+
+  // Update user profile if it exists
+  try {
+    const userProfile = localStorage.getItem('uncubed_user_profile');
+
+    if (userProfile) {
+      const profile = JSON.parse(userProfile);
+      profile.theme = newTheme;
+      localStorage.setItem('uncubed_user_profile', JSON.stringify(profile));
+    }
+  } catch (error) {
+    console.error('Error updating user profile theme:', error);
+  }
+
+  logStore.logSystem(`Theme set to ${newTheme} mode from parent`);
+}
+
 export const links: LinksFunction = () => [
   {
     rel: 'icon',
@@ -155,6 +181,16 @@ export default function App() {
         if (typeof receivedPrompt === 'string' && receivedPrompt.trim()) {
           console.log('Received prompt from parent:', receivedPrompt);
           chatStore.setKey('prompt', receivedPrompt);
+        }
+      }
+
+      // Handle theme property
+      if (event.data && typeof event.data === 'object' && 'theme' in event.data) {
+        const receivedTheme = event.data.theme;
+
+        if (typeof receivedTheme === 'string' && (receivedTheme === 'light' || receivedTheme === 'dark')) {
+          console.log('Received theme from parent:', receivedTheme);
+          setTheme(receivedTheme);
         }
       }
     };
